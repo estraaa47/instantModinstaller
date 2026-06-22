@@ -6,24 +6,10 @@
   "entries": [
     {
       "name": "Fabric API",
-      "url": "https://cdn.modrinth.com/data/P7dR8mSH/versions/EXAMPLE/fabric-api-0.0.0%2B1.21.1.jar",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "url": "https://cdn.modrinth.com/data/P7dR8mSH/versions/5zJNhXV2/fabric-api-0.141.4%2B1.21.11.jar",
+      "sha256": "9286762874fd20d1d45e006d175fea8ff762da54e00946bbe952c4f61077159a",
       "target": "mods",
       "gpu": null
-    },
-    {
-      "name": "Sodium (성능 향상)",
-      "url": "https://cdn.modrinth.com/data/AANobbMI/versions/EXAMPLE/sodium-fabric-0.0.0.jar",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "target": "mods",
-      "gpu": null
-    },
-    {
-      "name": "Complementary Shaders (NVIDIA 전용 예시)",
-      "url": "https://github.com/EXAMPLE-USER/EXAMPLE-REPO/releases/download/v1.0/ComplementaryShaders.zip",
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-      "target": "shaderpacks",
-      "gpu": "nvidia"
     }
   ]
 }
