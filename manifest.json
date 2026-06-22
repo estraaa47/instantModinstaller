@@ -1,6 +1,6 @@
 {
   "manifest_version": 1,
-  "minecraft_version": "1.21.1",
+  "minecraft_version": "1.21.11",
   "loader": "fabric",
   "loader_version": null,
   "entries": [
