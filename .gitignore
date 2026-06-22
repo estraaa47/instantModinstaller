@@ -1,0 +1,7 @@
+# 빌드 산출물 (exe 는 GitHub 에 올리지 않음 — 친구에게 직접 전달)
+build/
+dist/
+*.spec
+__pycache__/
+*.pyc
+.imi_write_test.tmp
