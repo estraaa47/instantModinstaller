@@ -2,19 +2,19 @@
 
 Minecraft Fabric 모드팩을 간편하게 설치하고 실행할 수 있는 런처입니다.
 
-복잡한 폴더 이동이나 모드 파일 복사 없이, `Astra Ducunt.exe`를 실행한 뒤 설치 버튼만 누르면 필요한 Fabric 프로필과 모드 파일이 자동으로 준비됩니다.
+복잡한 폴더 이동이나 모드 파일 복사 없이, `AstraDucunt.exe`를 실행한 뒤 설치 버튼만 누르면 필요한 Fabric 프로필과 모드 파일이 자동으로 준비됩니다.
 
 ## 다운로드
 
 최신 버전은 [GitHub Releases](https://github.com/estraaa47/instantModinstaller/releases)에서 받을 수 있습니다.
 
-1. Releases 페이지에서 `Astra Ducunt.exe`를 다운로드합니다.
+1. Releases 페이지에서 `AstraDucunt.exe`를 다운로드합니다.
 2. 다운로드한 exe 파일을 실행합니다.
 3. Windows 보안 경고가 뜨면, 출처를 확인한 뒤 `추가 정보` → `실행`을 선택합니다.
 
 ## 설치 방법
 
-1. `Astra Ducunt.exe`를 실행합니다.
+1. `AstraDucunt.exe`를 실행합니다.
 2. Minecraft 설치 경로가 자동으로 표시되는지 확인합니다.
    - 보통 경로는 `C:\Users\사용자이름\AppData\Roaming\.minecraft`입니다.
    - 경로가 비어 있거나 다르면 `찾아보기`로 `.minecraft` 폴더를 선택하세요.
