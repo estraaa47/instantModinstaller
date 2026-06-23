@@ -1,6 +1,6 @@
 {
   "version": "1.0.3",
   "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.3/AstraDucunt.exe",
-  "sha256": "d476141ea35818c2a88951e175b76b75395769ac6b97a1f4c5d1f62a97f52076",
+  "sha256": "b89528bb30db752a07d4d1b0e1cdb5149193ca0171d077a356d72231f2ee1709",
   "notes": "Fix launcher self-update (updater script + download URL), rename exe to AstraDucunt.exe (no space), and add the program icon."
 }
