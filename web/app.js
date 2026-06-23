@@ -352,15 +352,23 @@ function markLangSel(){
     it.classList.toggle("sel", it.getAttribute("data-code")===lang));
 }
 
+// 브리지가 '완전히' 준비됐는지 = api 객체뿐 아니라 실제 메서드까지 붙었는지 확인
+function bridgeReady(){
+  return !!(window.pywebview && window.pywebview.api &&
+            typeof window.pywebview.api.load_manifest_state === "function");
+}
 let _started = false;
-function boot(){ if(_started) return; _started = true; bind(); init(); }
+function boot(){
+  if(_started || !bridgeReady()) return;   // 메서드 안 붙었으면 대기(폴이 재시도)
+  _started = true; bind(); init();
+}
 window.addEventListener("pywebviewready", boot);
-if(window.pywebview && window.pywebview.api){ boot(); }
+boot();   // 이미 준비됐으면 즉시
 let _bridgeTries = 0;
 const _bridgeTimer = setInterval(()=>{
+  boot();
   if(_started){ clearInterval(_bridgeTimer); return; }
-  if(window.pywebview && window.pywebview.api){ clearInterval(_bridgeTimer); boot(); return; }
-  if(++_bridgeTries > 100){
+  if(++_bridgeTries > 200){   // ~10초
     clearInterval(_bridgeTimer);
     $("cMsg").classList.remove("hidden");
     $("cMsg").textContent = "런처 브릿지 연결 실패";

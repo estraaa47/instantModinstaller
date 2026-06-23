@@ -1,6 +1,6 @@
 {
   "version": "1.0.4",
   "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.4/AstraDucunt.exe",
-  "sha256": "6aaca192baa67be81cd9bf2c5213f096aaf70e20a356a395b44508d93de02d56",
-  "notes": "Show the launcher version reliably (was falling back to a hardcoded 1.0.2 when the version fetch raced/failed). Version now comes with the main boot data."
+  "sha256": "c6c60cb8097b06d682d871eef73bfeda0b2e5ebb36fc8adea7b0857167d8df74",
+  "notes": "Wait for the JS<->Python bridge methods to attach before booting (fixes 'api.load_manifest_state is not a function' and the wrong 1.0.2 version label on slower machines)."
 }
