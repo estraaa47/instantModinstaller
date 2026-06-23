@@ -214,16 +214,21 @@ def install_launcher_update(info=None, step=None, progress=None):
         )
     update_exe.write_bytes(data)
 
+    # 주의: 파라미터 이름으로 $Pid 를 쓰면 PowerShell 자동 읽기전용 변수 $PID 와
+    # 충돌해 바인딩 단계에서 실패한다. 반드시 다른 이름($ProcId)을 사용.
     script = """
 param(
+  [int]$ProcId,
   [string]$Src,
-  [string]$Dst,
-  [int]$Pid
+  [string]$Dst
 )
 $ErrorActionPreference = "Stop"
 try {
-  Wait-Process -Id $Pid -ErrorAction SilentlyContinue
-  Copy-Item -LiteralPath $Src -Destination $Dst -Force
+  Wait-Process -Id $ProcId -ErrorAction SilentlyContinue
+  for ($i = 0; $i -lt 30; $i++) {
+    try { Copy-Item -LiteralPath $Src -Destination $Dst -Force; break }
+    catch { Start-Sleep -Milliseconds 300 }
+  }
   Start-Process -FilePath $Dst
 } finally {
   Remove-Item -LiteralPath $Src -Force -ErrorAction SilentlyContinue
@@ -242,12 +247,12 @@ try {
             "Bypass",
             "-File",
             str(script_path),
+            "-ProcId",
+            str(os.getpid()),
             "-Src",
             str(update_exe),
             "-Dst",
             str(current_exe),
-            "-Pid",
-            str(os.getpid()),
         ],
         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
         close_fds=True,
