@@ -60,6 +60,10 @@ function applyI18n(){
   if(slides.length) renderCarousel(slides);
 }
 
+function setLauncherVersion(v){
+  $("appVersion").textContent = v ? `v${v}` : "v1.0.1";
+}
+
 // ===== 상태 =====
 let api = null;
 const state = { path:"", manifest:null, mode:"checking", extras:[], launcherUpdate:null };
@@ -104,7 +108,9 @@ function init(){
 // 파이썬 → JS 부팅 콜백
 window.onPath = (p)=>{ state.path = p || ""; $("path").value = state.path; };
 window.onManifest = (m)=>{
-  if(m && m.ok) $("appSub").textContent = `Fabric · ${m.version}`;
+  if(m && m.ok) {
+    $("appSub").textContent = `Fabric · ${m.version || "1.21.11"}`;
+  }
   else if(m && m.error) {
     $("cMsg").classList.remove("hidden");
     $("cMsg").textContent = m.error;
@@ -120,6 +126,11 @@ window.onState = (st)=>{
 window.onCarousel = (items)=>renderCarousel(items);
 
 async function loadInitial(){
+  try {
+    setLauncherVersion(await api.launcher_version());
+  } catch(e) {
+    setLauncherVersion("1.0.1");
+  }
   try {
     const p = await api.detect_path();
     onPath(p);
@@ -156,7 +167,7 @@ function renderCarousel(items){
   $("cMsg").classList.add("hidden");
   slides.forEach((s,i)=>{
     const el = document.createElement("div"); el.className = "slide";
-    el.innerHTML = `${s.icon?`<img src="${s.icon}">`:`<div style="width:92px;height:92px;border:1px dashed var(--border);border-radius:18px"></div>`}
+    el.innerHTML = `${s.icon?`<img src="${s.icon}">`:`<div class="thumbMissing"></div>`}
       <div><div class="stitle">${escapeHtml(s.title)}</div>${s.page?`<div class="shint">${t("open_page")}</div>`:""}</div>`;
     el.onclick = ()=>{ if(s.page) api.open_url(s.page); };
     track.appendChild(el);
@@ -239,6 +250,7 @@ function startInstall(){
 async function checkLauncherUpdate(){
   try {
     const info = await api.check_launcher_update();
+    if(info && info.current) setLauncherVersion(info.current);
     state.launcherUpdate = (info && info.update_available) ? info : null;
   } catch(e) {
     state.launcherUpdate = null;
