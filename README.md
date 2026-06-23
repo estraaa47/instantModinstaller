@@ -1,97 +1,65 @@
 # Astra Ducunt
 
-Minecraft Fabric modpack installer and launcher helper for Astra Ducunt.
+Minecraft Fabric 모드팩을 간편하게 설치하고 실행할 수 있는 런처입니다.
 
-The desktop app is a Python + pywebview launcher. The UI lives in `web/`, while the install and update logic lives in `engine.py`.
+복잡한 폴더 이동이나 모드 파일 복사 없이, `Astra Ducunt.exe`를 실행한 뒤 설치 버튼만 누르면 필요한 Fabric 프로필과 모드 파일이 자동으로 준비됩니다.
 
-## Current Structure
+## 다운로드
 
-- `app.py`: pywebview entry point and JavaScript bridge
-- `engine.py`: Minecraft path detection, Fabric profile install, mod download, hash check, profile update, launcher self-update logic
-- `web/`: HTML/CSS/JS UI and runtime assets
-- `manifest.json`: modpack manifest fetched by the launcher
-- `launcher_version.json`: launcher self-update metadata
-- `AstraDucunt-web.spec`: active PyInstaller spec
-- `build_exe.bat`: builds `dist\Astra Ducunt.exe`
+최신 버전은 [GitHub Releases](https://github.com/estraaa47/instantModinstaller/releases)에서 받을 수 있습니다.
 
-Legacy tkinter installer files have been removed. The webview launcher is the main app.
+1. Releases 페이지에서 `Astra Ducunt.exe`를 다운로드합니다.
+2. 다운로드한 exe 파일을 실행합니다.
+3. Windows 보안 경고가 뜨면, 출처를 확인한 뒤 `추가 정보` → `실행`을 선택합니다.
 
-## Modpack Updates
+## 설치 방법
 
-For mod changes, update `manifest.json` and push it to GitHub. The launcher reads:
+1. `Astra Ducunt.exe`를 실행합니다.
+2. Minecraft 설치 경로가 자동으로 표시되는지 확인합니다.
+   - 보통 경로는 `C:\Users\사용자이름\AppData\Roaming\.minecraft`입니다.
+   - 경로가 비어 있거나 다르면 `찾아보기`로 `.minecraft` 폴더를 선택하세요.
+3. 필요한 설치 옵션을 선택합니다.
+   - 셰이더 설치
+   - RAM 할당
+   - 새 프로필 생성
+4. `설치` 버튼을 누릅니다.
+5. 설치가 끝나면 `플레이` 버튼으로 Minecraft Launcher를 실행합니다.
+6. Minecraft Launcher에서 `Astra Ducunt` 프로필을 선택하고 플레이합니다.
 
-```text
-https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/manifest.json
-```
+## 업데이트와 재설치
 
-Each entry should use a direct HTTPS download URL without tracking query parameters.
+- 런처를 실행하면 모드팩 상태를 자동으로 확인합니다.
+- 새 모드팩 업데이트가 있으면 설치 버튼이 업데이트 용도로 동작합니다.
+- 이미 최신 상태라면 `플레이` 버튼이 표시됩니다.
+- 플레이 버튼 왼쪽의 화살표를 누르면 `재설치` 버튼이 펼쳐집니다.
+- RAM 할당이나 프로필 옵션을 바꾼 뒤 재설치하면 변경된 설정이 다시 적용됩니다.
 
-Required fields:
+## 런처 업데이트
 
-```json
-{
-  "name": "Fabric API",
-  "url": "https://cdn.modrinth.com/data/.../fabric-api.jar",
-  "sha256": "...",
-  "target": "mods"
-}
-```
+창 오른쪽 위의 다운로드 아이콘은 런처 자체 업데이트 버튼입니다.
 
-Then fill or refresh hashes:
+- 최신 버전이면 회색으로 비활성화됩니다.
+- 새 버전이 있으면 하늘색으로 활성화됩니다.
+- 버튼을 누르면 최신 런처를 다운로드하고 교체합니다.
 
-```powershell
-python update_hashes.py --fill manifest.json
-```
+## 언어 변경
 
-Use `--force` when you want to recalculate existing hashes.
+왼쪽 위의 언어 버튼을 눌러 한국어와 일본어를 선택할 수 있습니다.
 
-## Building
+## 필요 사항
 
-```powershell
-.\build_exe.bat
-```
+- Windows
+- 인터넷 연결
+- 공식 Minecraft Launcher
+- Minecraft 정품 계정
 
-Output:
+## 주의사항
 
-```text
-dist\Astra Ducunt.exe
-```
+- 설치 중에는 런처를 종료하지 마세요.
+- 기존에 직접 넣어둔 모드와 충돌할 수 있습니다.
+- 문제가 생기면 `.minecraft`의 `mods` 폴더를 백업한 뒤 다시 설치해 보세요.
+- exe 파일은 반드시 공식 GitHub Releases에서 받은 파일만 사용하세요.
 
-Do not commit `dist/`, `build/`, or `.exe` files to the repository. Publish the exe through GitHub Releases when needed.
+## 프로젝트 링크
 
-## Launcher Self-Update
-
-The launcher checks:
-
-```text
-https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/launcher_version.json
-```
-
-When releasing a new exe:
-
-1. Build `dist\Astra Ducunt.exe`.
-2. Upload the exe to GitHub Releases.
-3. Calculate its SHA-256.
-4. Update `launcher_version.json`:
-
-```json
-{
-  "version": "1.0.1",
-  "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.1/Astra.Ducunt.exe",
-  "sha256": "...",
-  "notes": ""
-}
-```
-
-5. Commit and push `launcher_version.json`.
-
-## Install Behavior
-
-The installer:
-
-- Detects the default `.minecraft` path.
-- Installs or updates the Fabric launcher profile for Minecraft `1.21.11`.
-- Downloads required mod files into `mods`.
-- Verifies every downloaded file with SHA-256.
-- Applies RAM/profile options again when reinstalling.
-- Leaves build artifacts and local diagnostics out of Git via `.gitignore`.
+런처 왼쪽 아래의 GitHub 아이콘을 누르면 [프로젝트 페이지](https://github.com/estraaa47/instantModinstaller)를 열 수 있습니다.
