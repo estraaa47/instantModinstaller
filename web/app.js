@@ -61,7 +61,7 @@ function applyI18n(){
 }
 
 function setLauncherVersion(v){
-  $("appVersion").textContent = v ? `v${v}` : "v1.0.1";
+  $("appVersion").textContent = v ? `v${v}` : "v1.0.2";
 }
 
 // ===== 상태 =====
@@ -129,7 +129,7 @@ async function loadInitial(){
   try {
     setLauncherVersion(await api.launcher_version());
   } catch(e) {
-    setLauncherVersion("1.0.1");
+    setLauncherVersion("1.0.2");
   }
   try {
     const p = await api.detect_path();
