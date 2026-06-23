@@ -135,6 +135,7 @@ class Api:
         m = self._load_manifest()
         return {
             "path": path,
+            "launcher_version": engine.LAUNCHER_VERSION,
             "manifest": {"ok": True, "version": m["minecraft_version"],
                          "count": len(m["entries"])},
             "state": self._state_payload(path, options),

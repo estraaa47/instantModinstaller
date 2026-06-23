@@ -61,7 +61,7 @@ function applyI18n(){
 }
 
 function setLauncherVersion(v){
-  $("appVersion").textContent = v ? `v${v}` : "v1.0.2";
+  if(v) $("appVersion").textContent = `v${v}`;   // 값 없으면 덮어쓰지 않음(잘못된 버전 표시 방지)
 }
 
 // ===== 상태 =====
@@ -127,11 +127,6 @@ window.onCarousel = (items)=>renderCarousel(items);
 
 async function loadInitial(){
   try {
-    setLauncherVersion(await api.launcher_version());
-  } catch(e) {
-    setLauncherVersion("1.0.2");
-  }
-  try {
     const p = await api.detect_path();
     onPath(p);
   } catch(e) {
@@ -139,6 +134,7 @@ async function loadInitial(){
   }
   try {
     const boot = await api.load_manifest_state(state.path, currentOptions());
+    if(boot.launcher_version) setLauncherVersion(boot.launcher_version);
     if(boot.path) onPath(boot.path);
     onManifest(boot.manifest);
     renderCarousel(boot.carousel || []);
