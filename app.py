@@ -92,6 +92,9 @@ class Api:
     def github_url(self):
         return engine.REPO_URL
 
+    def launcher_version(self):
+        return engine.LAUNCHER_VERSION
+
     def check_launcher_update(self):
         try:
             return engine.get_launcher_update_info()
