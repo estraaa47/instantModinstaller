@@ -27,7 +27,7 @@ from pathlib import Path
 REPO_URL = "https://github.com/estraaa47/instantModinstaller"
 MANIFEST_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/manifest.json"
 LAUNCHER_UPDATE_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/launcher_version.json"
-LAUNCHER_VERSION = "1.0.3"
+LAUNCHER_VERSION = "1.0.4"
 
 APP_TITLE = "Astra Ducunt"              # 앱 전체 명칭
 APP_TITLEBAR = "Astra Ducunt Launcher"  # 좌상단 타이틀바 표기
