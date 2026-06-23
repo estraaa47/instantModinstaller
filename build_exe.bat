@@ -19,6 +19,6 @@ if errorlevel 1 (
 )
 
 echo [3/3] Done.
-echo     Output: dist\Astra Ducunt.exe
+echo     Output: dist\AstraDucunt.exe
 echo.
 pause

@@ -1,6 +1,6 @@
 {
   "version": "1.0.3",
-  "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.3/Astra.Ducunt.exe",
-  "sha256": "1b4565e6bf74d883cbd6b81144af43519f7ad1f7b106fb6c832549bfbb8ea7ba",
-  "notes": "Fix launcher self-update: corrected PowerShell updater script and download URL so future updates apply and restart properly."
+  "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.3/AstraDucunt.exe",
+  "sha256": "ed53491d3558f7a31f9517e50f7ad30ca380c2c2d48582b4978cb93711744725",
+  "notes": "Fix launcher self-update: corrected PowerShell updater script and download URL so future updates apply and restart properly. Executable renamed to AstraDucunt.exe (no space)."
 }
