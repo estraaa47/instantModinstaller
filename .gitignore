@@ -1,7 +1,26 @@
-# 빌드 산출물 (exe 는 GitHub 에 올리지 않음 — 친구에게 직접 전달)
-build/
-dist/
-*.spec
+# Build outputs
+/build/
+/dist/
+*.exe
+
+# Python cache
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Local diagnostics / throwaway test files
+_*.log
+_verify_screen.png
+_min.py
+_t2.py
+_t3.py
+
+# Legacy root assets are not used by the web launcher.
+# Runtime assets live under web/assets/.
+/assets/
+
+# Legacy tkinter PyInstaller spec. The active build uses AstraDucunt-web.spec.
+/Astra Ducunt.spec
+
+# Misc local probes
 .imi_write_test.tmp

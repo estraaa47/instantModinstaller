@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+  <div id="app">
+    <!-- 좌측 히어로 (배너2 + 언어 + 타이틀) -->
+    <section id="hero">
+      <img id="banner" src="assets/banner2.png" alt="">
+      <div id="scrim"></div>
+
+      <div id="lang" title="Language">
+        <img id="flag" src="assets/flag_ko.png" alt="">
+        <span id="langLabel">Language</span>
+      </div>
+      <div id="langMenu" class="hidden">
+        <div class="langItem" data-code="ko"><img src="assets/flag_ko.png"><span>한국어</span></div>
+        <div class="langItem" data-code="ja"><img src="assets/flag_ja.png"><span>日本語</span></div>
+      </div>
+
+      <div id="heroTitle">
+        <div id="appName">Astra Ducunt</div>
+        <div id="appSub">Fabric</div>
+      </div>
+    </section>
+
+    <!-- 우측 콘텐츠 -->
+    <section id="content">
+      <div class="winctl">
+        <button id="launcherUpdate" class="wbtn iconWinBtn download" title="최신버전입니다" aria-disabled="true">
+        </button>
+        <div class="wbtn" id="btnMin">—</div>
+        <div class="wbtn close" id="btnClose">✕</div>
+      </div>
+
+      <h1 id="h1" data-i18n="title">모드팩 설치</h1>
+      <label class="section" data-i18n="install_path">설치 위치</label>
+      <div class="pathrow">
+        <input id="path" type="text" spellcheck="false">
+        <button id="browse" class="btn ghost" data-i18n="browse">찾아보기</button>
+      </div>
+
+      <div class="optrow">
+        <div class="carousel glass" id="carousel">
+          <div class="cTrack" id="cTrack"></div>
+          <div class="cArrow left" id="cPrev">‹</div>
+          <div class="cArrow right" id="cNext">›</div>
+          <div class="cDots" id="cDots"></div>
+          <div class="cMsg" id="cMsg" data-i18n="loading_mods">모드 정보를 불러오는 중…</div>
+        </div>
+
+        <div class="options glass" id="optionsPanel">
+          <div class="optTitle" data-i18n="install_options">설치 옵션</div>
+          <label class="optItem">
+            <span class="lbl"><b data-i18n="opt_shader">셰이더 설치</b></span>
+            <span class="switch"><input id="optShader" type="checkbox" checked><i></i></span>
+          </label>
+          <label class="optItem">
+            <span class="lbl"><b data-i18n="opt_ram">램 할당</b></span>
+            <span class="ram"><input id="optRam" type="number" min="1" max="64" value="4"><em>GB</em></span>
+          </label>
+          <label class="optItem">
+            <span class="lbl"><b data-i18n="opt_newprofile">신규 프로필</b><small data-i18n="opt_overwrite">끄면 덮어쓰기</small></span>
+            <span class="switch"><input id="optNew" type="checkbox"><i></i></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="progress hidden" id="progressWrap"><div id="progressBar"></div></div>
+      <div class="step" id="step"></div>
+
+      <div class="footer">
+        <div class="footerLeft">
+          <button id="githubBtn" class="btn footerIconBtn" title="GitHub" aria-label="GitHub">
+          </button>
+        </div>
+        <div id="primarySplit" class="primarySplit">
+          <button id="reinstallToggle" class="btn splitArrow" title="재설치" aria-expanded="false"></button>
+          <button id="reinstallBtn" class="btn reinstallBtn" data-i18n="reinstall">재설치</button>
+          <button id="primary" class="btn primary" disabled data-i18n="checking">확인 중</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- 삭제 경고 / 확인 모달 -->
+  <div id="modalBack" class="hidden">
+    <div id="modal">
+      <div id="modalText"></div>
+      <div class="modalBtns">
+        <button id="modalCancel" class="btn ghost" data-i18n="cancel">취소</button>
+        <button id="modalOk" class="btn primary" data-i18n="confirm">계속</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
