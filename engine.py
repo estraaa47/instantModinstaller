@@ -529,7 +529,7 @@ def has_fabric_profile(mc_dir: Path, manifest):
     return bool(profile and profile.get("lastVersionId", "").startswith("fabric-loader-"))
 
 
-def inspect_install_state(mc_dir: Path, manifest):
+def inspect_install_state(mc_dir: Path, manifest, include_shaders=True):
     """manifest 기준으로 현재 설치 상태를 확인한다."""
     mc_dir = Path(mc_dir)
     ok, msg = check_path_writable(mc_dir)
@@ -545,6 +545,8 @@ def inspect_install_state(mc_dir: Path, manifest):
         }
 
     to_install, gpu = expected_entries_for_machine(manifest)
+    if not include_shaders:
+        to_install = [e for e in to_install if e.get("target") != "shaderpacks"]
     expected = expected_files_by_target(to_install)
     missing = []
     changed = []
