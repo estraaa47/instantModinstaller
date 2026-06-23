@@ -138,7 +138,7 @@ async function loadInitial(){
     onPath("");
   }
   try {
-    const boot = await api.load_manifest_state(state.path);
+    const boot = await api.load_manifest_state(state.path, currentOptions());
     if(boot.path) onPath(boot.path);
     onManifest(boot.manifest);
     renderCarousel(boot.carousel || []);
@@ -153,7 +153,16 @@ async function loadInitial(){
 
 function refreshState(){
   setPrimary("checking");
-  Promise.resolve(api.get_state(state.path)).then(st=>onState(st)).catch(()=>setPrimary("install"));
+  Promise.resolve(api.get_state(state.path, currentOptions()))
+    .then(st=>onState(st)).catch(()=>setPrimary("install"));
+}
+
+function currentOptions(){
+  return {
+    shaders: $("optShader").checked,
+    ram: Math.max(1, Math.min(64, parseInt($("optRam").value) || 4)),
+    new_profile: $("optNew").checked,
+  };
 }
 
 // ===== 캐러셀 =====
@@ -239,12 +248,7 @@ function startInstall(){
   $("reinstallBtn").disabled = true;
   $("progressWrap").classList.remove("hidden");
   $("progressBar").style.width = "0%";
-  const opts = {
-    shaders: $("optShader").checked,
-    ram: Math.max(1, Math.min(64, parseInt($("optRam").value) || 4)),
-    new_profile: $("optNew").checked,
-  };
-  api.install(state.path, opts);
+  api.install(state.path, currentOptions());
 }
 
 async function checkLauncherUpdate(){
@@ -330,6 +334,9 @@ function bind(){
     if(p){ state.path = p; $("path").value = p; refreshState(); }
   };
   $("path").addEventListener("change", ()=>{ state.path = $("path").value.trim(); refreshState(); });
+  $("optShader").addEventListener("change", refreshState);
+  $("optRam").addEventListener("change", refreshState);
+  $("optNew").addEventListener("change", refreshState);
 
   // 언어 메뉴
   $("lang").onclick = (e)=>{ e.stopPropagation(); $("langMenu").classList.toggle("hidden"); };

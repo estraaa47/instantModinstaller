@@ -1,6 +1,6 @@
 {
   "version": "1.0.1",
   "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.1/Astra%20Ducunt.exe",
-  "sha256": "4ddc70c127db51dd70b19ab835dd20bd0d21d8a1ec63e3f4abe4fbca5328882d",
-  "notes": "UI polish, reinstall split button, launcher self-update button, collapsed banner peek cleanup, transparent mod thumbnails, user README update."
+  "sha256": "2a7f284c5f8bddc40fb3caea75a4337e1e206cc55249899a39fa6ef26b7bf1e8",
+  "notes": "UI polish, reinstall split button, launcher self-update button, collapsed banner peek cleanup, transparent mod thumbnails, optional Photon shaderpack install, user README update."
 }

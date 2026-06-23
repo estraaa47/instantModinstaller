@@ -129,6 +129,13 @@
       "sha256": "b62018b2fb3b4e25a3e8de36ac040b4f75d56b55eb6fd3650806fdfceb6d0a7c",
       "target": "mods",
       "gpu": null
+    },
+    {
+      "name": "Photon Shader",
+      "url": "https://cdn.modrinth.com/data/lLqFfGNs/versions/gUv7fBPN/photon_v1.3b.zip",
+      "sha256": "120897768eaa8cb1f14a3e98f88dff009ae3204ee3b96904a4fe8586edfc1ead",
+      "target": "shaderpacks",
+      "gpu": null
     }
   ]
 }

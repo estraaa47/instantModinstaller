@@ -121,26 +121,29 @@ class Api:
             self._manifest = m
         return self._manifest
 
-    def _state_payload(self, path):
+    def _state_payload(self, path, options=None):
         if not path:
             return {"status": "path_error", "extra": [], "total": 0}
-        st = engine.inspect_install_state(Path(path), self._manifest)
+        options = options or {}
+        include_shaders = bool(options.get("shaders", True))
+        st = engine.inspect_install_state(
+            Path(path), self._manifest, include_shaders=include_shaders)
         return {"status": st["status"], "total": st["total"], "extra": st["extra"]}
 
-    def load_manifest_state(self, path=None):
+    def load_manifest_state(self, path=None, options=None):
         path = path or self.detect_path()
         m = self._load_manifest()
         return {
             "path": path,
             "manifest": {"ok": True, "version": m["minecraft_version"],
                          "count": len(m["entries"])},
-            "state": self._state_payload(path),
+            "state": self._state_payload(path, options),
             "carousel": _basic_carousel_items(m),
         }
 
-    def get_state(self, path):
+    def get_state(self, path, options=None):
         self._load_manifest()
-        return self._state_payload(path or "")
+        return self._state_payload(path or "", options)
 
     def get_carousel(self):
         m = self._load_manifest()
