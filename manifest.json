@@ -1,140 +1,147 @@
 {
   "manifest_version": 1,
-  "minecraft_version": "1.21.11",
+  "minecraft_version": "26.1",
   "loader": "fabric",
   "loader_version": null,
   "entries": [
     {
       "name": "Fabric API",
-      "url": "https://cdn.modrinth.com/data/P7dR8mSH/versions/5zJNhXV2/fabric-api-0.141.4%2B1.21.11.jar",
-      "sha256": "9286762874fd20d1d45e006d175fea8ff762da54e00946bbe952c4f61077159a",
+      "url": "https://cdn.modrinth.com/data/P7dR8mSH/versions/WC1KT7Yg/fabric-api-0.153.0%2B26.1.2.jar",
+      "sha256": "2a604ccc66c1294f860acb8d0763c8887e927b3ed34aa262ac79e26d8626b94c",
       "target": "mods",
       "gpu": null
     },
     {
       "name": "Sodium",
-      "url": "https://cdn.modrinth.com/data/AANobbMI/versions/NFkjnzWE/sodium-fabric-0.8.12%2Bmc1.21.11.jar",
-      "sha256": "009299748f192f6246fd6759a26304f0fea06f3412cff522d1d533e2b8db8176",
-      "target": "mods",
-      "gpu": null
-    },
-    {
-      "name": "Lithium",
-      "url": "https://cdn.modrinth.com/data/gvQqBUqZ/versions/Ow7wA0kG/lithium-fabric-0.21.4%2Bmc1.21.11.jar",
-      "sha256": "5135c41da5b43cbdcb29424bde65195143ac4084e23834c8eac065942201c78b",
-      "target": "mods",
-      "gpu": null
-    },
-    {
-      "name": "Voxy",
-      "url": "https://cdn.modrinth.com/data/fxxUqruK/versions/H3w2nVdU/voxy-0.2.16-beta%2B1.21.11.jar",
-      "sha256": "7f8226cf64a4f5dc064e1075965714b718ac5f42fb28f826135a37c64e66e10b",
+      "url": "https://cdn.modrinth.com/data/AANobbMI/versions/uGvVQBnw/sodium-fabric-0.8.9%2Bmc26.1.1.jar",
+      "sha256": "25ad95ba787bd7ff2a0deaf20a8f4642b91e23489d0e10933693d9963a6022f2",
       "target": "mods",
       "gpu": null
     },
     {
       "name": "Iris",
-      "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/fDpuVzVr/iris-fabric-1.10.7%2Bmc1.21.11.jar",
-      "sha256": "58c55da18189c91a49f847d3cee451633a23b575fb69c0c5b65ddb274436cb19",
+      "url": "https://cdn.modrinth.com/data/YL57xq9U/versions/MwcLS51S/iris-fabric-1.10.9%2Bmc26.1.1.jar",
+      "sha256": "aea0eefb174d19ad97a812b6de2e304f0d3abc50357b316908cf1035f1514b07",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "Lithium",
+      "url": "https://cdn.modrinth.com/data/gvQqBUqZ/versions/fQBdPR1m/lithium-fabric-0.24.6%2Bmc26.1.2.jar",
+      "sha256": "509e7f770c7d48bd37e9592917329db2768e4695c72a43e22c19ef64d0f9839f",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "Voxy",
+      "url": "https://cdn.modrinth.com/data/fxxUqruK/versions/tIs0IXaN/voxy-0.2.15-beta%2B26.1.jar",
+      "sha256": "cae6913440cec1ab1ee908839300b5b47a223adcd42a2a1b547a7dc6e05af791",
       "target": "mods",
       "gpu": null
     },
     {
       "name": "Chunky",
-      "url": "https://cdn.modrinth.com/data/fALzjamp/versions/1CpEkmcD/Chunky-Fabric-1.4.55.jar",
-      "sha256": "33cbd9bce0e3366851c4b59861043334eb7c1892248f1ef11403bbedb476bd15",
+      "url": "https://cdn.modrinth.com/data/fALzjamp/versions/4Eotm6ov/Chunky-Fabric-1.5.3.jar",
+      "sha256": "ecdfc55a0f67f3ec6f40850687615c941ae226bd88f4e06188a7b268fd3da942",
       "target": "mods",
       "gpu": null
     },
     {
-      "name": "Farmer's Delight Refabricated",
-      "url": "https://cdn.modrinth.com/data/7vxePowz/versions/ZP4Uof9C/FarmersDelight-1.21.11-3.4.9%2Brefabricated.jar",
-      "sha256": "02bb4c22a5b9f10942f4c952faf7c5d63f269d3c42f43fa36064ffd4b516ab76",
-      "target": "mods",
-      "gpu": null
-    },
-    {
-      "name": "GlitchCore",
-      "url": "https://cdn.modrinth.com/data/s3dmwKy5/versions/CO7NeLTt/GlitchCore-fabric-1.21.11-21.11.0.4.jar",
-      "sha256": "8c5b3912d167640f1911982781578ccfb3fbb11e73fcee319c7ff44045a6e8ef",
-      "target": "mods",
-      "gpu": null
-    },
-    {
-      "name": "Serene Seasons",
-      "url": "https://cdn.modrinth.com/data/e0bNACJD/versions/6GpaVF7N/SereneSeasons-fabric-1.21.11-21.11.0.4.jar",
-      "sha256": "bde932120bd1b8502503f427a1d0bd3d39d8ad131452732925e9a48c3068bdf3",
+      "name": "Farmer Delight",
+      "url": "https://cdn.modrinth.com/data/7vxePowz/versions/uvsJqmJG/FarmersDelight-26.1-3.6.6%2Brefabricated.jar",
+      "sha256": "ad68239ab204b0d709ba8237458d220dd6f53fad848f611317a084caa076ed7a",
       "target": "mods",
       "gpu": null
     },
     {
       "name": "Atmosfera",
-      "url": "https://cdn.modrinth.com/data/28G1xpgF/versions/VCfzD0aF/atmosfera-2.7.0%2Bmc1.21.11.jar",
-      "sha256": "854d392ef8431030cb987fb3c76aa9af203b9a5f1cb43dc3fe4c63473ae54682",
+      "url": "https://cdn.modrinth.com/data/28G1xpgF/versions/LG9qwSyD/atmosfera-2.7.0%2Bmc26.1.jar",
+      "sha256": "6885ecb06d9d575b5a257412fb7025697117f99ee5cd935b55002d7ba60b2138",
       "target": "mods",
       "gpu": null
     },
     {
       "name": "Cloth Config",
-      "url": "https://cdn.modrinth.com/data/9s6osm5g/versions/xuX40TN5/cloth-config-21.11.153-fabric.jar",
-      "sha256": "8a40c84e5ecde525acfb6c4e13b8002dacfca3ef9534d7faf6e8049656f423c8",
+      "url": "https://cdn.modrinth.com/data/9s6osm5g/versions/GFM8zh9J/cloth-config-26.1.154.jar",
+      "sha256": "fb7a5d869ce10eaac2c2fe9ab84b4fc011a1fbfa575a93be9845a386a7f0c7d3",
       "target": "mods",
       "gpu": null
     },
     {
       "name": "Text Placeholder API",
-      "url": "https://cdn.modrinth.com/data/eXts2L7r/versions/qxjzQ9xY/placeholder-api-2.8.2%2B1.21.10.jar",
-      "sha256": "975c7e575c27bf6fa82baaf8cd7645051a298f74bf95cf58092b104dd21de5ed",
+      "url": "https://cdn.modrinth.com/data/eXts2L7r/versions/b3IPAHgB/placeholder-api-3.0.0%2B26.1.jar",
+      "sha256": "7c4893195ab4bec56d05a5fd4521bd9bc8619ef11aa0a5c83a426a99d2191062",
       "target": "mods",
       "gpu": null
     },
     {
       "name": "Mod Menu",
-      "url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/Tyk71iSw/modmenu-17.0.0.jar",
-      "sha256": "95f2c9571ca4a1e30d473783ed909c6b9d997b0b3e1418ea189cad73282c5128",
+      "url": "https://cdn.modrinth.com/data/mOgUt4GM/versions/p7gjPPpV/modmenu-18.0.0-beta.1.jar",
+      "sha256": "6387950861dd000601a920549b8ff8b0a6d309db32e187187cfe7f39911a2cf7",
       "target": "mods",
       "gpu": null
     },
     {
-      "name": "Architectury API",
-      "url": "https://cdn.modrinth.com/data/lhGA9TYQ/versions/uNdfrcQ8/architectury-19.0.1-fabric.jar",
-      "sha256": "661395d6f0bef0d3a794e2db74df5600c7387ba6fb946b172315977201a667c7",
+      "name": "Macaw's Furniture",
+      "url": "https://cdn.modrinth.com/data/dtWC90iB/versions/RZnGeGr0/mcw-furniture-3.4.2-mc26.1fabric.jar",
+      "sha256": "f4a2459e2167d67174b2047f4166acfee33a2c0e4100ce721122e1d3d8b1ab9b",
       "target": "mods",
       "gpu": null
     },
     {
-      "name": "REI",
-      "url": "https://cdn.modrinth.com/data/nfn13YXA/versions/QEiKPzyl/RoughlyEnoughItems-21.11.816-fabric.jar",
-      "sha256": "c940a3c610deeb1b063d6bcc32709fdedf371489d504b29ef050fe7388a5f8ec",
+      "name": "JEI",
+      "url": "https://cdn.modrinth.com/data/u6dRKJwZ/versions/lHlIk1rn/jei-26.1.2-fabric-29.6.2.38.jar",
+      "sha256": "e9f1d0ad1f92a8510a33e3f673f0895190324b4c87bcb28e0f9ac961a3ca512b",
       "target": "mods",
       "gpu": null
     },
     {
       "name": "WI Zoom",
-      "url": "https://cdn.modrinth.com/data/o7DitHWP/versions/8TffgKNp/WI-Zoom-1.7-MC1.21.11.jar",
-      "sha256": "5ad1432d2d0666fdbeb304a25af740682229de59568188f0f5390cbe419a7bb8",
+      "url": "https://cdn.modrinth.com/data/o7DitHWP/versions/pjgnJOcl/WI-Zoom-1.7-MC26.1.jar",
+      "sha256": "293058eed783f8dba3a33d6fa5d285af2f9afb2450ab166408d5454171919cee",
       "target": "mods",
       "gpu": null
     },
     {
       "name": "Simple Voice Chat",
-      "url": "https://cdn.modrinth.com/data/9eGKb6K1/versions/tiSyltLv/voicechat-fabric-1.21.11-2.6.20.jar",
-      "sha256": "3fd54139b09a35bb31cc83eea3b6070c30b23f04279c9e0807725ada0222ccb9",
+      "url": "https://cdn.modrinth.com/data/9eGKb6K1/versions/lT9C1Daj/voicechat-fabric-2.6.20%2B26.1.2.jar",
+      "sha256": "925813f66ecd7d5be0761b4341e55d6ad8f583434431d144b21be0396ba4f29e",
       "target": "mods",
       "gpu": null
     },
     {
-      "name": "Terrain Generator",
-      "url": "https://cdn.modrinth.com/data/6cI2TdZu/versions/TArKjoro/terrain-diffusion-mc-2.2.0-windows%2B1.21.11.jar",
-      "sha256": "b62018b2fb3b4e25a3e8de36ac040b4f75d56b55eb6fd3650806fdfceb6d0a7c",
+      "name": "Terralith",
+      "url": "https://cdn.modrinth.com/data/8oi3bsk5/versions/FCzSjHeG/Terralith_26.1_v2.6.2_Fabric.jar",
+      "sha256": "a07b50381d688d11893f162f2d29cd3ea4cefafd2f8ac010e700f56394747ab7",
       "target": "mods",
       "gpu": null
     },
     {
-      "name": "Photon Shader",
-      "url": "https://cdn.modrinth.com/data/lLqFfGNs/versions/gUv7fBPN/photon_v1.3b.zip",
-      "sha256": "120897768eaa8cb1f14a3e98f88dff009ae3204ee3b96904a4fe8586edfc1ead",
-      "target": "shaderpacks",
+      "name": "Lithostitched",
+      "url": "https://cdn.modrinth.com/data/XaDC71GB/versions/ePXn1Tua/lithostitched-1.7.10%2Bbeta4-fabric-26.1.jar",
+      "sha256": "77d47dcc701b0bbb14ca7a9efb2c0f905df285b86762b788943015a6c6e5f677",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "Sound Physics",
+      "url": "https://cdn.modrinth.com/data/qyVF9oeo/versions/y3vsp51g/sound-physics-remastered-fabric-1.5.1%2B26.1.2.jar",
+      "sha256": "7392f46fcf5d0921805dd4c91c9d99482d59a4ff92870c52c6da2e76798c88cb",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "Cristel Lib",
+      "url": "https://cdn.modrinth.com/data/cl223EMc/versions/nyrGV1GK/cristellib-fabric-26.1.2-3.1.8.jar",
+      "sha256": "a7a3547bf8e4c61d02c923f23f163143f5b0e19195f06af24c5080b039859bcc",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "Towns and Towers",
+      "url": "https://cdn.modrinth.com/data/DjLobEOy/versions/eN3WLQ3P/t_and_t-fabric-neoforge-1.13.11.jar",
+      "sha256": "13b38f18cff6103b02f2b7d768b0d495edb8969df724e1538e13ce5bcc05f8be",
+      "target": "mods",
       "gpu": null
     }
   ]
