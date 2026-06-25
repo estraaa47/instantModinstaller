@@ -130,6 +130,11 @@ class Api:
             Path(path), self._manifest, include_shaders=include_shaders)
         return {"status": st["status"], "total": st["total"], "extra": st["extra"]}
 
+    def _profile_options(self, path):
+        if not path:
+            return {"ram": None}
+        return {"ram": engine.profile_ram_gb(Path(path))}
+
     def load_manifest_state(self, path=None, options=None):
         path = path or self.detect_path()
         m = self._load_manifest()
@@ -139,12 +144,16 @@ class Api:
             "manifest": {"ok": True, "version": m["minecraft_version"],
                          "count": len(m["entries"])},
             "state": self._state_payload(path, options),
+            "profile_options": self._profile_options(path),
             "carousel": _basic_carousel_items(m),
         }
 
     def get_state(self, path, options=None):
         self._load_manifest()
         return self._state_payload(path or "", options)
+
+    def get_profile_options(self, path):
+        return self._profile_options(path or "")
 
     def get_carousel(self):
         m = self._load_manifest()

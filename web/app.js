@@ -49,6 +49,7 @@ const LANG = {
 };
 let lang = "ko";
 const t = (k)=>LANG[lang][k];
+const DEFAULT_RAM_GB = 8;
 function applyI18n(){
   document.querySelectorAll("[data-i18n]").forEach(el=>{
     const v = LANG[lang][el.getAttribute("data-i18n")];
@@ -136,6 +137,7 @@ async function loadInitial(){
     const boot = await api.load_manifest_state(state.path, currentOptions());
     if(boot.launcher_version) setLauncherVersion(boot.launcher_version);
     if(boot.path) onPath(boot.path);
+    applyProfileOptions(boot.profile_options);
     onManifest(boot.manifest);
     renderCarousel(boot.carousel || []);
     onState(boot.state);
@@ -153,10 +155,26 @@ function refreshState(){
     .then(st=>onState(st)).catch(()=>setPrimary("install"));
 }
 
+function setRamValue(value){
+  const ram = Math.max(1, Math.min(64, parseInt(value) || DEFAULT_RAM_GB));
+  $("optRam").value = String(ram);
+}
+
+function applyProfileOptions(options){
+  if(options && options.ram) setRamValue(options.ram);
+}
+
+async function loadProfileOptions(){
+  try {
+    const options = await api.get_profile_options(state.path);
+    applyProfileOptions(options);
+  } catch(e) {}
+}
+
 function currentOptions(){
   return {
     shaders: $("optShader").checked,
-    ram: Math.max(1, Math.min(64, parseInt($("optRam").value) || 4)),
+    ram: Math.max(1, Math.min(64, parseInt($("optRam").value) || DEFAULT_RAM_GB)),
     new_profile: $("optNew").checked,
   };
 }
@@ -327,9 +345,18 @@ function bind(){
   $("cNext").onclick = ()=>{ go(cur+1); restartTimer(); };
   $("browse").onclick = async ()=>{
     const p = await api.browse();
-    if(p){ state.path = p; $("path").value = p; refreshState(); }
+    if(p){
+      state.path = p;
+      $("path").value = p;
+      await loadProfileOptions();
+      refreshState();
+    }
   };
-  $("path").addEventListener("change", ()=>{ state.path = $("path").value.trim(); refreshState(); });
+  $("path").addEventListener("change", async ()=>{
+    state.path = $("path").value.trim();
+    await loadProfileOptions();
+    refreshState();
+  });
   $("optShader").addEventListener("change", refreshState);
   $("optRam").addEventListener("change", refreshState);
   $("optNew").addEventListener("change", refreshState);
@@ -375,4 +402,3 @@ const _bridgeTimer = setInterval(()=>{
     setPrimary("install");
   }
 }, 50);
-
