@@ -27,7 +27,7 @@ from pathlib import Path
 REPO_URL = "https://github.com/estraaa47/instantModinstaller"
 MANIFEST_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/manifest.json"
 LAUNCHER_UPDATE_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/launcher_version.json"
-LAUNCHER_VERSION = "1.0.4"
+LAUNCHER_VERSION = "1.0.5"
 
 APP_TITLE = "Astra Ducunt"              # 앱 전체 명칭
 APP_TITLEBAR = "Astra Ducunt Launcher"  # 좌상단 타이틀바 표기
@@ -393,6 +393,41 @@ def _unique_profile_name(profiles, base):
     return f"{base} {i}"
 
 
+def _astra_profiles(profiles):
+    items = []
+    for pid, profile in profiles.items():
+        name = str(profile.get("name") or "")
+        if pid == PROFILE_ID or str(pid).startswith(f"{PROFILE_ID}-"):
+            items.append((pid, profile))
+        elif name == PROFILE_NAME or name.startswith(f"{PROFILE_NAME} "):
+            items.append((pid, profile))
+    return items
+
+
+def _latest_astra_profile(profiles):
+    items = _astra_profiles(profiles)
+    if not items:
+        return None
+    return max(
+        items,
+        key=lambda item: (
+            str(item[1].get("lastUsed") or ""),
+            str(item[1].get("created") or ""),
+            str(item[0]),
+        ),
+    )
+
+
+def _new_profile_id(profiles):
+    base = f"{PROFILE_ID}-{int(time.time())}"
+    pid = base
+    i = 2
+    while pid in profiles:
+        pid = f"{base}-{i}"
+        i += 1
+    return pid
+
+
 def create_launcher_profile(mc_dir: Path, version_id: str, log,
                             ram_gb=None, new_profile=False):
     """공식 런처의 launcher_profiles.json 에 프로파일 추가.
@@ -409,23 +444,32 @@ def create_launcher_profile(mc_dir: Path, version_id: str, log,
     profiles = data.setdefault("profiles", {})
     now = time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime())
 
-    if new_profile and PROFILE_ID in profiles:
-        pid = f"{PROFILE_ID}-{int(time.time())}"
+    if new_profile and _astra_profiles(profiles):
+        pid = _new_profile_id(profiles)
         name = _unique_profile_name(profiles, PROFILE_NAME)
         created = now
+        previous = {}
     else:
-        pid = PROFILE_ID
-        name = PROFILE_NAME
-        created = profiles.get(PROFILE_ID, {}).get("created", now)
+        target = _latest_astra_profile(profiles)
+        if target:
+            pid, previous = target
+            name = previous.get("name") or PROFILE_NAME
+            created = previous.get("created", now)
+        else:
+            pid = PROFILE_ID
+            name = PROFILE_NAME
+            created = now
+            previous = {}
 
-    entry = {
+    entry = dict(previous)
+    entry.update({
         "name": name,
         "type": "custom",
         "created": created,
         "lastUsed": now,
         "lastVersionId": version_id,
         "icon": "Furnace",
-    }
+    })
     if ram_gb:
         try:
             entry["javaArgs"] = f"-Xmx{int(ram_gb)}G"
@@ -528,10 +572,13 @@ def has_fabric_profile(mc_dir: Path, manifest):
         return False
     try:
         data = json.loads(lp.read_text(encoding="utf-8"))
-        profile = data.get("profiles", {}).get(PROFILE_ID)
+        profiles = data.get("profiles", {})
     except Exception:
         return False
-    return bool(profile and profile.get("lastVersionId", "").startswith("fabric-loader-"))
+    return any(
+        profile.get("lastVersionId", "").startswith("fabric-loader-")
+        for _, profile in _astra_profiles(profiles)
+    )
 
 
 def inspect_install_state(mc_dir: Path, manifest, include_shaders=True):
