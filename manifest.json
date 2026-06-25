@@ -89,6 +89,20 @@
       "gpu": null
     },
     {
+      "name": "Collective",
+      "url": "https://cdn.modrinth.com/data/e0M1UDsY/versions/20oNLyvX/collective-26.1.0-8.16.jar",
+      "sha256": "f24192c5b470f93f6efd063734970eae52463bfd82e06a05a6228ea46601084e",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "Tree Harvester",
+      "url": "https://cdn.modrinth.com/data/abooMhox/versions/MiUnJkVx/treeharvester-26.1.0-9.3.jar",
+      "sha256": "126ba7420010073fbecb649d61b873b52f83cff1e36bb907cd681dc60b0e3466",
+      "target": "mods",
+      "gpu": null
+    },
+    {
       "name": "JEI",
       "url": "https://cdn.modrinth.com/data/u6dRKJwZ/versions/lHlIk1rn/jei-26.1.2-fabric-29.6.2.38.jar",
       "sha256": "e9f1d0ad1f92a8510a33e3f673f0895190324b4c87bcb28e0f9ac961a3ca512b",
