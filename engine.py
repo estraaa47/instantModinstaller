@@ -27,7 +27,7 @@ from pathlib import Path
 REPO_URL = "https://github.com/estraaa47/instantModinstaller"
 MANIFEST_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/manifest.json"
 LAUNCHER_UPDATE_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/launcher_version.json"
-LAUNCHER_VERSION = "1.0.5"
+LAUNCHER_VERSION = "1.0.6"
 
 APP_TITLE = "Astra Ducunt"              # 앱 전체 명칭
 APP_TITLEBAR = "Astra Ducunt Launcher"  # 좌상단 타이틀바 표기
@@ -220,16 +220,36 @@ def install_launcher_update(info=None, step=None, progress=None):
 param(
   [int]$ProcId,
   [string]$Src,
-  [string]$Dst
+  [string]$Dst,
+  [string]$ExpectedHash
 )
 $ErrorActionPreference = "Stop"
 try {
   Wait-Process -Id $ProcId -ErrorAction SilentlyContinue
-  for ($i = 0; $i -lt 30; $i++) {
-    try { Copy-Item -LiteralPath $Src -Destination $Dst -Force; break }
-    catch { Start-Sleep -Milliseconds 300 }
+  Start-Sleep -Milliseconds 1200
+  $copied = $false
+  for ($i = 0; $i -lt 60; $i++) {
+    try {
+      Copy-Item -LiteralPath $Src -Destination $Dst -Force
+      if ($ExpectedHash) {
+        $actual = (Get-FileHash -Algorithm SHA256 -LiteralPath $Dst).Hash.ToLowerInvariant()
+        if ($actual -ne $ExpectedHash.ToLowerInvariant()) {
+          throw "Updated launcher hash mismatch. expected=$ExpectedHash actual=$actual"
+        }
+      }
+      $copied = $true
+      break
+    }
+    catch {
+      if ($i -eq 59) { throw }
+      Start-Sleep -Milliseconds 500
+    }
   }
-  Start-Process -FilePath $Dst
+  if (-not $copied) {
+    throw "Updated launcher could not be copied."
+  }
+  Start-Sleep -Milliseconds 1800
+  Start-Process -FilePath $Dst -WorkingDirectory (Split-Path -Parent $Dst)
 } finally {
   Remove-Item -LiteralPath $Src -Force -ErrorAction SilentlyContinue
   Remove-Item -LiteralPath $PSCommandPath -Force -ErrorAction SilentlyContinue
@@ -253,6 +273,8 @@ try {
             str(update_exe),
             "-Dst",
             str(current_exe),
+            "-ExpectedHash",
+            expected,
         ],
         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
         close_fds=True,
@@ -428,6 +450,46 @@ def _new_profile_id(profiles):
     return pid
 
 
+def _ram_gb_from_java_args(java_args):
+    match = re.search(r"(?:^|\s)-Xmx(\d+)([gGmM])(?:\s|$)", str(java_args or ""))
+    if not match:
+        return None
+    amount = int(match.group(1))
+    unit = match.group(2).lower()
+    if unit == "m":
+        amount = max(1, round(amount / 1024))
+    return max(1, min(64, amount))
+
+
+def _java_args_with_ram(java_args, ram_gb):
+    ram_arg = f"-Xmx{int(ram_gb)}G"
+    parts = str(java_args or "").split()
+    replaced = False
+    for i, part in enumerate(parts):
+        if re.fullmatch(r"-Xmx\d+[gGmM]", part):
+            parts[i] = ram_arg
+            replaced = True
+            break
+    if not replaced:
+        parts.insert(0, ram_arg)
+    return " ".join(parts)
+
+
+def profile_ram_gb(mc_dir: Path):
+    lp = Path(mc_dir) / "launcher_profiles.json"
+    if not lp.exists():
+        return None
+    try:
+        data = json.loads(lp.read_text(encoding="utf-8"))
+        target = _latest_astra_profile(data.get("profiles", {}))
+    except Exception:
+        return None
+    if not target:
+        return None
+    _, profile = target
+    return _ram_gb_from_java_args(profile.get("javaArgs"))
+
+
 def create_launcher_profile(mc_dir: Path, version_id: str, log,
                             ram_gb=None, new_profile=False):
     """공식 런처의 launcher_profiles.json 에 프로파일 추가.
@@ -472,7 +534,7 @@ def create_launcher_profile(mc_dir: Path, version_id: str, log,
     })
     if ram_gb:
         try:
-            entry["javaArgs"] = f"-Xmx{int(ram_gb)}G"
+            entry["javaArgs"] = _java_args_with_ram(entry.get("javaArgs"), ram_gb)
         except (TypeError, ValueError):
             pass
     profiles[pid] = entry

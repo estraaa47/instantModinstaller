@@ -1,6 +1,6 @@
 {
-  "version": "1.0.5",
-  "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.5/AstraDucunt.exe",
-  "sha256": "3ea697e2fb0e15e1e86cfda76826b29a99955afbf3fe121a76a3a71d09783a53",
-  "notes": "Use the latest Astra Ducunt profile when reinstalling without creating a new profile, so profile-specific RAM and version updates keep following the most recently used profile."
+  "version": "1.0.6",
+  "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.6/AstraDucunt.exe",
+  "sha256": "e6e6b8f8b2c9ca7f587eafa6b3678667840b6525390b701f9ca0f0b7cffc625f",
+  "notes": "Harden launcher self-update restart, update the latest Astra Ducunt profile on reinstall, default RAM allocation to 8 GB, and preserve existing profile RAM settings."
 }
