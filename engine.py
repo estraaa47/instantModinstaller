@@ -27,7 +27,7 @@ from pathlib import Path
 REPO_URL = "https://github.com/estraaa47/instantModinstaller"
 MANIFEST_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/manifest.json"
 LAUNCHER_UPDATE_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/launcher_version.json"
-LAUNCHER_VERSION = "1.0.6"
+LAUNCHER_VERSION = "1.0.7"
 
 APP_TITLE = "Astra Ducunt"              # 앱 전체 명칭
 APP_TITLEBAR = "Astra Ducunt Launcher"  # 좌상단 타이틀바 표기
@@ -189,6 +189,22 @@ def get_launcher_update_info():
     }
 
 
+def _clean_child_env():
+    """PyInstaller onefile 부트로더가 주입한 환경변수를 제거한 환경을 만든다.
+
+    onefile exe 는 실행 시 _MEIxxxxx 임시폴더에 풀고 _PYI_APPLICATION_HOME_DIR
+    (구버전 _MEIPASS2) 등을 환경에 심는다. 이 값을 물려받은 자식 프로세스(여기선
+    PowerShell → 새 런처)는 "이미 압축 해제된 2단계 프로세스"로 오인해 압축 해제를
+    건너뛰고, 이미 정리된 옛 _MEI 경로의 python DLL 을 로드하려다 실패한다.
+    재시작용 자식에는 반드시 깨끗한 환경을 넘겨야 한다.
+    """
+    env = os.environ.copy()
+    for key in list(env):
+        if key.startswith("_PYI") or key == "_MEIPASS2":
+            env.pop(key, None)
+    return env
+
+
 def install_launcher_update(info=None, step=None, progress=None):
     if not getattr(sys, "frozen", False):
         raise InstallError("개발 실행 상태에서는 exe 셀프 업데이트를 적용할 수 없습니다.")
@@ -203,7 +219,7 @@ def install_launcher_update(info=None, step=None, progress=None):
     script_path = update_dir / "apply_update.ps1"
 
     if step:
-        step("런처 업데이트 다운로드")
+        step("st_lu_download")
     data, _ = fetch_bytes(info["url"], progress=progress)
     actual = sha256_of(data).lower()
     expected = str(info["sha256"]).lower()
@@ -258,7 +274,7 @@ try {
     script_path.write_text(script, encoding="utf-8")
 
     if step:
-        step("런처 업데이트 적용 준비")
+        step("st_lu_apply")
     subprocess.Popen(
         [
             "powershell",
@@ -278,6 +294,7 @@ try {
         ],
         creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
         close_fds=True,
+        env=_clean_child_env(),
     )
     return {"ok": True, "version": info["latest"]}
 
@@ -490,11 +507,107 @@ def profile_ram_gb(mc_dir: Path):
     return _ram_gb_from_java_args(profile.get("javaArgs"))
 
 
+def system_ram_gb():
+    """시스템 총 물리 RAM(GB, 정수). 실패 시 16."""
+    try:
+        import ctypes
+
+        class MEMORYSTATUSEX(ctypes.Structure):
+            _fields_ = [
+                ("dwLength", ctypes.c_ulong),
+                ("dwMemoryLoad", ctypes.c_ulong),
+                ("ullTotalPhys", ctypes.c_ulonglong),
+                ("ullAvailPhys", ctypes.c_ulonglong),
+                ("ullTotalPageFile", ctypes.c_ulonglong),
+                ("ullAvailPageFile", ctypes.c_ulonglong),
+                ("ullTotalVirtual", ctypes.c_ulonglong),
+                ("ullAvailVirtual", ctypes.c_ulonglong),
+                ("ullAvailExtendedVirtual", ctypes.c_ulonglong),
+            ]
+
+        stat = MEMORYSTATUSEX()
+        stat.dwLength = ctypes.sizeof(stat)
+        ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(stat))
+        gb = int(round(stat.ullTotalPhys / (1024 ** 3)))
+        return max(2, gb)
+    except Exception:
+        return 16
+
+
+def detect_ui_language():
+    """윈도우 기본 UI 언어 감지 → 'ko' 또는 'ja'. 그 외/실패 시 'ko'."""
+    try:
+        import ctypes
+        langid = ctypes.windll.kernel32.GetUserDefaultUILanguage()
+        primary = langid & 0x3FF
+        if primary == 0x12:      # LANG_KOREAN
+            return "ko"
+        if primary == 0x11:      # LANG_JAPANESE
+            return "ja"
+    except Exception:
+        pass
+    return "ko"
+
+
+def _resource_path(*parts):
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base, *parts)
+
+
+_PROFILE_ICON_CACHE = None
+
+
+def _profile_icon():
+    """마인크래프트 런처 프로파일에 표시할 아이콘.
+    우리 로고(icon.png)를 base64 data URL 로 반환. 실패 시 내장 'Furnace'."""
+    global _PROFILE_ICON_CACHE
+    if _PROFILE_ICON_CACHE is not None:
+        return _PROFILE_ICON_CACHE
+    try:
+        with open(_resource_path("web", "assets", "icon.png"), "rb") as f:
+            raw = f.read()
+        import base64
+        _PROFILE_ICON_CACHE = "data:image/png;base64," + base64.b64encode(raw).decode("ascii")
+    except Exception:
+        _PROFILE_ICON_CACHE = "Furnace"
+    return _PROFILE_ICON_CACHE
+
+
+def list_astra_profiles(mc_dir: Path):
+    """기존 astra 프로파일 목록을 최근 사용 순(최신 우선)으로 반환.
+    각 항목: {"id", "name", "ram"}. 프로필 선택 UI 용."""
+    lp = Path(mc_dir) / "launcher_profiles.json"
+    if not lp.exists():
+        return []
+    try:
+        data = json.loads(lp.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    items = _astra_profiles(data.get("profiles", {}))
+    items.sort(
+        key=lambda it: (
+            str(it[1].get("lastUsed") or ""),
+            str(it[1].get("created") or ""),
+            str(it[0]),
+        ),
+        reverse=True,
+    )
+    return [
+        {
+            "id": pid,
+            "name": profile.get("name") or PROFILE_NAME,
+            "ram": _ram_gb_from_java_args(profile.get("javaArgs")),
+        }
+        for pid, profile in items
+    ]
+
+
 def create_launcher_profile(mc_dir: Path, version_id: str, log,
-                            ram_gb=None, new_profile=False):
+                            ram_gb=None, new_profile=False, profile_id=None):
     """공식 런처의 launcher_profiles.json 에 프로파일 추가.
     ram_gb: 지정 시 -Xmx{N}G 자바 인자 설정.
-    new_profile: True=항상 새 프로파일(고유 id), False=기존 astra-ducunt 덮어쓰기."""
+    new_profile: True=항상 새 프로파일(고유 id), False=기존 프로파일 덮어쓰기.
+    profile_id: new_profile=False 일 때 덮어쓸 대상 프로파일 id (없으면 최근 것)."""
     lp = mc_dir / "launcher_profiles.json"
     data = {"profiles": {}, "version": 3}
     if lp.exists():
@@ -512,7 +625,13 @@ def create_launcher_profile(mc_dir: Path, version_id: str, log,
         created = now
         previous = {}
     else:
-        target = _latest_astra_profile(profiles)
+        target = None
+        # 사용자가 선택한 프로파일이 실제 astra 프로파일이면 그것을 덮어쓴다.
+        if profile_id and profile_id in profiles:
+            if any(pid0 == profile_id for pid0, _ in _astra_profiles(profiles)):
+                target = (profile_id, profiles[profile_id])
+        if target is None:
+            target = _latest_astra_profile(profiles)
         if target:
             pid, previous = target
             name = previous.get("name") or PROFILE_NAME
@@ -530,7 +649,7 @@ def create_launcher_profile(mc_dir: Path, version_id: str, log,
         "created": created,
         "lastUsed": now,
         "lastVersionId": version_id,
-        "icon": "Furnace",
+        "icon": _profile_icon(),
     })
     if ram_gb:
         try:
@@ -718,22 +837,23 @@ def inspect_install_state(mc_dir: Path, manifest, include_shaders=True):
 def run_install(mc_dir: Path, manifest_url, log, step, progress, options=None):
     """
     전체 설치 파이프라인.
-      options: {"shaders":bool, "ram":int(GB), "new_profile":bool}
+      options: {"shaders":bool, "ram":int(GB), "new_profile":bool, "profile_id":str}
     실패 시 InstallError 를 던진다.
     """
     options = options or {}
     want_shaders = options.get("shaders", True)
     ram_gb = options.get("ram")
     new_profile = bool(options.get("new_profile", False))
+    profile_id = options.get("profile_id") or None
     mc_dir = Path(mc_dir)
 
-    step("경로 확인")
+    step("st_path")
     ok, msg = check_path_writable(mc_dir)
     if not ok:
         raise InstallError(msg)
     log(f"마인크래프트 경로: {mc_dir}")
 
-    step("manifest 읽기")
+    step("st_manifest")
     log(f"manifest 다운로드: {manifest_url}")
     manifest = fetch_json(manifest_url)
     validate_manifest(manifest)
@@ -742,7 +862,7 @@ def run_install(mc_dir: Path, manifest_url, log, step, progress, options=None):
     entries = manifest["entries"]
     log(f"버전 {mc_version} / 로더 fabric / 모드 {len(entries)}개")
 
-    step("GPU 감지")
+    step("st_gpu")
     gpu = detect_gpu()
     log(f"이 PC 의 GPU: {gpu}")
 
@@ -763,7 +883,7 @@ def run_install(mc_dir: Path, manifest_url, log, step, progress, options=None):
     staged = []  # (data_path, target_folder, filename)
     try:
         if to_install:
-            step("다운로드 및 검증")
+            step("st_download")
             for idx, e in enumerate(to_install, 1):
                 name = e.get("name", entry_filename(e))
                 log(f"[{idx}/{len(to_install)}] 다운로드: {name}")
@@ -788,7 +908,7 @@ def run_install(mc_dir: Path, manifest_url, log, step, progress, options=None):
                 progress(idx / max(len(to_install), 1))
 
             # 모두 검증된 뒤에야 실제 폴더에 반영 (원자성 ↑)
-            step("설치")
+            step("st_install")
             for target in MANAGED_FOLDERS:
                 (mc_dir / target).mkdir(parents=True, exist_ok=True)
             for stage_path, target, fn in staged:
@@ -798,21 +918,22 @@ def run_install(mc_dir: Path, manifest_url, log, step, progress, options=None):
                 shutil.move(str(stage_path), str(dest))
                 log(f"설치: {target}/{fn}")
 
-            step("동기화")
+            step("st_sync")
             for target in SYNC_FOLDERS:
                 sync_folder(mc_dir / target, expected[target], log)
         else:
             log("설치할 모드가 없어 Fabric 로더만 설치합니다.")
 
-        step("Fabric 로더 설치")
+        step("st_fabric")
         version_id = install_fabric(mc_dir, mc_version, loader_version, log)
 
-        step("런처 프로파일 생성")
+        step("st_profile")
         create_launcher_profile(mc_dir, version_id, log,
-                                ram_gb=ram_gb, new_profile=new_profile)
+                                ram_gb=ram_gb, new_profile=new_profile,
+                                profile_id=profile_id)
 
         progress(1.0)
-        step("완료")
+        step("st_done")
         log("✅ 모든 설치가 완료되었습니다. 공식 런처에서 "
             f"'{PROFILE_NAME}' 프로파일을 선택해 실행하세요.")
     finally:
