@@ -140,6 +140,8 @@ class Api:
         m = self._load_manifest()
         return {
             "path": path,
+            "lang": engine.detect_ui_language(),
+            "system_ram": engine.system_ram_gb(),
             "launcher_version": engine.LAUNCHER_VERSION,
             "manifest": {"ok": True, "version": m["minecraft_version"],
                          "count": len(m["entries"])},
@@ -154,6 +156,14 @@ class Api:
 
     def get_profile_options(self, path):
         return self._profile_options(path or "")
+
+    def list_profiles(self, path):
+        if not path:
+            return []
+        try:
+            return engine.list_astra_profiles(Path(path))
+        except Exception:
+            return []
 
     def get_carousel(self):
         m = self._load_manifest()

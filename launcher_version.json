@@ -1,6 +1,6 @@
 {
-  "version": "1.0.6",
-  "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.6/AstraDucunt.exe",
-  "sha256": "e6e6b8f8b2c9ca7f587eafa6b3678667840b6525390b701f9ca0f0b7cffc625f",
-  "notes": "Harden launcher self-update restart, update the latest Astra Ducunt profile on reinstall, default RAM allocation to 8 GB, and preserve existing profile RAM settings."
+  "version": "1.0.7",
+  "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.7/AstraDucunt.exe",
+  "sha256": "2c37648bb2c1ec182490203d9b2c78977e91281989fd71a6cf9d6d2a81a49346",
+  "notes": "Fix self-update restart crash (clean PyInstaller env), add a profile picker when 'new profile' is off with the Astra Ducunt logo as the launcher profile icon, auto-detect Windows UI language (Korean/Japanese) with PretendardJP for Japanese, switch the carousel dots to an auto-slide gauge, clamp RAM from 2 GB to system total and turn the button into Update when RAM changes, lighten the UI fonts, and localize install step messages."
 }
