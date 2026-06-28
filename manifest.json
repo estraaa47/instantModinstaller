@@ -159,6 +159,20 @@
       "gpu": null
     },
     {
+      "name": "Shippy Ships",
+      "url": "https://cdn.modrinth.com/data/oxBNHOmi/versions/tIF28gna/shippy-ships-1.0.8-FABRIC-MC-26.1-2.jar",
+      "sha256": "14eea1abdff69ced4ff0555eac317fee9921bdb88795d5121811fc07a326f864",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "Physics Mod",
+      "url": "https://cdn.modrinth.com/data/Xy8aRQKS/versions/A3vkLgL0/physics-mod-3.1.41-mc-26.1.x-fabric.jar",
+      "sha256": "fd4239afe59b5c0ca6c573da94ec57d0910f9389cf9cb2a8080cbe310eea1018",
+      "target": "mods",
+      "gpu": null
+    },
+    {
       "name": "Photon Shader",
       "url": "https://cdn.modrinth.com/data/lLqFfGNs/versions/gUv7fBPN/photon_v1.3b.zip",
       "sha256": "120897768eaa8cb1f14a3e98f88dff009ae3204ee3b96904a4fe8586edfc1ead",
