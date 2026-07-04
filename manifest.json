@@ -174,7 +174,7 @@
     },
     {
       "name": "ProjectDA",
-      "url": "https://raw.githubusercontent.com/estraaa47/instantModinstaller/refs/heads/main/mods/ProjectDA-0.1.0.jar",
+      "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/mods/ProjectDA-0.1.0.jar",
       "sha256": "d0d9e86dee41dcdd59bd97d95f205361d5bb3bb99b6deda402ba7b3594d16190",
       "target": "mods",
       "gpu": null
