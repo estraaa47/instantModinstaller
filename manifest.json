@@ -173,9 +173,9 @@
       "gpu": null
     },
     {
-      "name": "ProjectDA",
-      "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/mods/ProjectDA-0.1.0.jar",
-      "sha256": "71cc310339ae01daa545ea93ab81c09d429b07498a08b1f25919f19aa676f615",
+      "name": "ProjectDA Physics",
+      "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/mods/ProjectDA-Physics-0.1.0.jar",
+      "sha256": "916921ec7720afb2b68d26bd2fbbe2d042c9e2a77a59e15f9d1bc99e9a052157",
       "target": "mods",
       "gpu": null
     },
