@@ -180,6 +180,13 @@
       "gpu": null
     },
     {
+      "name": "No Crop Trample",
+      "url": "https://cdn.modrinth.com/data/TEL2rIgj/versions/ikPLJRgA/nocroptrample-1.1.0%2B26.1.1.jar",
+      "sha256": "141b3faf3d7883ff53dbe78bdcb84fb683d697bb37189a6bb32ab9f86caf7398",
+      "target": "mods",
+      "gpu": null
+    },
+    {
       "name": "Photon Shader",
       "url": "https://cdn.modrinth.com/data/lLqFfGNs/versions/gUv7fBPN/photon_v1.3b.zip",
       "sha256": "120897768eaa8cb1f14a3e98f88dff009ae3204ee3b96904a4fe8586edfc1ead",
