@@ -173,6 +173,20 @@
       "gpu": null
     },
     {
+      "name": "Continuity",
+      "url": "https://cdn.modrinth.com/data/1IjD5062/versions/l1mM6Ov7/continuity-3.0.1-beta.2%2B26.1.jar",
+      "sha256": "33e8acb7f264f691f2e6cf7c0d7b9152b54cf0353f37fc8a00d7312f26b36e3e",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "Do a Barrel Roll",
+      "url": "https://cdn.modrinth.com/data/6FtRfnLg/versions/xjeI6fAx/do_a_barrel_roll-fabric-3.8.4%2B26.1.jar",
+      "sha256": "17af71f00675498b29ce7457fa524a57afce2cdc9e5f4aa91a90df27773aa578",
+      "target": "mods",
+      "gpu": null
+    },
+    {
       "name": "ProjectDA Physics",
       "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/mods/ProjectDA-Physics-0.8.2.jar",
       "sha256": "84dba51e3aa306e4a99652490c5c78a232e289ff32fec71098ccca404e0ac11a",
