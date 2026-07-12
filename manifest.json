@@ -12,6 +12,20 @@
       "gpu": null
     },
     {
+      "name": "CICADA",
+      "url": "https://cdn.modrinth.com/data/IwCkru1D/versions/qUoRmDGM/cicada-lib-0.15.2%2B26.1.jar",
+      "sha256": "251119b37887c0816bbdd9c3bcc5c96415515c2db5103fc24a4a730bef9555c8",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "YetAnotherConfigLib (YACL)",
+      "url": "https://cdn.modrinth.com/data/1eAoo2KR/versions/A6V2zTVY/yet_another_config_lib_v3-3.9.5%2B26.1-fabric.jar",
+      "sha256": "836c823e18cdd9d15e7011a2e8b64f93bf4fb44e8f8e8df38d9114d265d1fe41",
+      "target": "mods",
+      "gpu": null
+    },
+    {
       "name": "Sodium",
       "url": "https://cdn.modrinth.com/data/AANobbMI/versions/uGvVQBnw/sodium-fabric-0.8.9%2Bmc26.1.1.jar",
       "sha256": "25ad95ba787bd7ff2a0deaf20a8f4642b91e23489d0e10933693d9963a6022f2",
