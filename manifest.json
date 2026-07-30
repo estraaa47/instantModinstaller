@@ -202,8 +202,29 @@
     },
     {
       "name": "ProjectDA Physics 2",
-      "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/mods/ProjectDA-Physics2-0.2.19.jar",
-      "sha256": "72abe61fc72732604375be273b459073d81ebf685250f74a9f09a3aab18d86be",
+      "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/mods/ProjectDA-Physics2-0.3.2.jar",
+      "sha256": "472451cd32f3077706571a6f1872c11f78f1e363b88e1d42c8081ae4bc6a400d",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "Immersive Paintings",
+      "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/mods/immersive_paintings-fabric-26.1-0.7.8.jar",
+      "sha256": "42180706621a72f594b41d2f6d7a12013667763deb9e124dec3520ee75b887cd",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "Fzzy Config",
+      "url": "https://cdn.modrinth.com/data/hYykXjDp/versions/EzFtPUO0/fzzy_config-0.7.6%2B26.1.jar?mr_download_reason=standalone&mr_loader=fabric",
+      "sha256": "1fde1eb7ea7a0c28c6619871c9b768969368e66bff3962ebb804dfab6556b8a6",
+      "target": "mods",
+      "gpu": null
+    },
+    {
+      "name": "Fabric Language Kotlin",
+      "url": "https://cdn.modrinth.com/data/Ha28R6CL/versions/bdhiINYC/fabric-language-kotlin-1.13.13%2Bkotlin.2.4.10.jar?mr_download_reason=standalone",
+      "sha256": "34ccdacf13bb9351fe43ce61912c2e09b72364e43e787d36ba3d2d04dec75a52",
       "target": "mods",
       "gpu": null
     },
