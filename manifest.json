@@ -202,8 +202,8 @@
     },
     {
       "name": "ProjectDA Physics 2",
-      "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/mods/ProjectDA-Physics2-0.3.46.jar",
-      "sha256": "2c8d8d1f07082dee3cfb4668ec155095f60dd2f64d5bdfc54800b7e48d66257b",
+      "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/mods/ProjectDA-Physics2-0.3.47.jar",
+      "sha256": "2cd42add1a9a5e2d4531fdb1a51dccb50113336faf47ea0dc1ec953927af08a9",
       "target": "mods",
       "gpu": null
     },
