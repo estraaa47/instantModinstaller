@@ -202,8 +202,8 @@
     },
     {
       "name": "ProjectDA Physics 2",
-      "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/mods/ProjectDA-Physics2-0.3.47.jar",
-      "sha256": "2cd42add1a9a5e2d4531fdb1a51dccb50113336faf47ea0dc1ec953927af08a9",
+      "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/mods/ProjectDA-Physics2-0.3.74.jar",
+      "sha256": "d4a1e82fa23425591d705075560aaea3d10831a0e5eb2fcf52dc2ef42fc5bf54",
       "target": "mods",
       "gpu": null
     },
@@ -237,8 +237,8 @@
     },
     {
       "name": "Photon Shader",
-      "url": "https://cdn.modrinth.com/data/lLqFfGNs/versions/gUv7fBPN/photon_v1.3b.zip",
-      "sha256": "120897768eaa8cb1f14a3e98f88dff009ae3204ee3b96904a4fe8586edfc1ead",
+      "url": "https://github.com/estraaa47/instantModinstaller/raw/refs/heads/main/shaderpacks/Photon_v1.3b_DA_support.zip",
+      "sha256": "25e0b0573c8f6c9bf736c976ec2f0d5906d9580b35c50ab9a6fdd3d3f2319480",
       "target": "shaderpacks",
       "gpu": null
     }
