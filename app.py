@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-app.py — Astra Ducunt Launcher (pywebview UI 진입점)
+app.py — Astra Ducunt (pywebview UI 진입점)
 ====================================================
 화면은 web/ (HTML/CSS/JS), 로직은 engine.py.
 무거운 작업(네트워크/검증)은 백그라운드 스레드에서 처리하고 결과만 JS 로 푸시 →
@@ -153,6 +153,27 @@ class Api:
     def get_state(self, path, options=None):
         self._load_manifest()
         return self._state_payload(path or "", options)
+
+    def refresh_manifest_state(self, path, options=None):
+        """원격 manifest를 강제로 다시 받고 최신 설치 상태를 함께 반환한다."""
+        separator = "&" if "?" in engine.MANIFEST_URL else "?"
+        refresh_url = (
+            f"{engine.MANIFEST_URL}{separator}_={int(time.time() * 1000)}"
+        )
+        manifest = engine.fetch_json(refresh_url)
+        engine.validate_manifest(manifest)
+        changed = manifest != self._manifest
+        self._manifest = manifest
+        return {
+            "changed": changed,
+            "manifest": {
+                "ok": True,
+                "version": manifest["minecraft_version"],
+                "count": len(manifest["entries"]),
+            },
+            "state": self._state_payload(path or "", options),
+            "carousel": _basic_carousel_items(manifest) if changed else None,
+        }
 
     def get_profile_options(self, path):
         return self._profile_options(path or "")

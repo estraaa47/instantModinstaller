@@ -70,6 +70,8 @@ const stepText = (m)=>{ const v = LANG[lang][m]; return (typeof v === "string") 
 const DEFAULT_RAM_GB = 8;
 const MIN_RAM_GB = 2;
 let MAX_RAM_GB = 64;   // 부팅 시 시스템 총 RAM 으로 갱신
+const MANIFEST_REFRESH_MS = 60_000;
+const MANIFEST_FOCUS_REFRESH_MS = 15_000;
 function applyI18n(){
   document.body.classList.toggle("lang-ja", lang === "ja");   // 일본어 자형용 폰트 전환
   document.querySelectorAll("[data-i18n]").forEach(el=>{
@@ -90,8 +92,47 @@ function setLauncherVersion(v){
 let api = null;
 const state = { path:"", manifest:null, mode:"checking", extras:[], launcherUpdate:null,
   backendStatus:"", installedRam:null };
+let primaryBusy = false;
 
 const $ = (id)=>document.getElementById(id);
+
+function setPrimaryLoading(show){
+  const group = $("primarySplit");
+  const area = $("primaryArea");
+  const profile = $("profilePick");
+  const loading = $("primaryLoading");
+  if(!group || !area || !profile || !loading) return;
+  if(show && !primaryBusy){
+    const bounds = area.getBoundingClientRect();
+    if(bounds.width > 0) area.style.width = Math.round(bounds.width) + "px";
+    if(bounds.height > 0) area.style.height = Math.round(bounds.height) + "px";
+    closeProfileMenu();
+    group.classList.remove("open");
+    $("reinstallToggle").setAttribute("aria-expanded", "false");
+  }
+  primaryBusy = show;
+  group.classList.toggle("hidden", show);
+  group.setAttribute("aria-hidden", show ? "true" : "false");
+  const profileHidden = show || $("optNew").checked;
+  profile.classList.toggle("hidden", profileHidden);
+  profile.setAttribute("aria-hidden", profileHidden ? "true" : "false");
+  loading.classList.toggle("hidden", !show);
+  loading.setAttribute("aria-hidden", show ? "false" : "true");
+  if(show) $("launcherUpdate").disabled = true;
+  else {
+    area.style.width = "";
+    area.style.height = "";
+    updateProfilePickVisibility();
+    updateLauncherButton();
+    requestAnimationFrame(syncProfileWidth);
+  }
+}
+
+function showCarouselLoading(show){
+  const loading = $("cLoading");
+  if(loading) loading.classList.toggle("hidden", !show);
+  if(show) $("cMsg").classList.add("hidden");
+}
 
 function setPrimary(mode){
   state.mode = mode;
@@ -120,6 +161,7 @@ function updateReinstallControls(){
 // ===== 초기화 (푸시 기반: api.start() 후 콜백으로 수신) =====
 function init(){
   if(!window.pywebview || !window.pywebview.api){
+    showCarouselLoading(false);
     $("cMsg").classList.remove("hidden");
     $("cMsg").textContent = t("bridge_wait");
     return;
@@ -136,6 +178,7 @@ window.onManifest = (m)=>{
     $("appSub").textContent = `Fabric · ${m.version || "1.21.11"}`;
   }
   else if(m && m.error) {
+    showCarouselLoading(false);
     $("cMsg").classList.remove("hidden");
     $("cMsg").textContent = m.error;
   }
@@ -164,6 +207,7 @@ function applyMode(){
 window.onCarousel = (items)=>renderCarousel(items);
 
 async function loadInitial(){
+  showCarouselLoading(true);
   try {
     const p = await api.detect_path();
     onPath(p);
@@ -187,11 +231,64 @@ async function loadInitial(){
     setPrimary("install");
   }
   checkLauncherUpdate();
+  startManifestRefresh();
+}
+
+let manifestRefreshing = false;
+let manifestRefreshTimer = null;
+let lastManifestRefresh = 0;
+
+async function refreshManifest(){
+  if(!api || manifestRefreshing || primaryBusy) return;
+  if(!$("modalBack").classList.contains("hidden")) return;
+  manifestRefreshing = true;
+  lastManifestRefresh = Date.now();
+  let ownsLoading = false;
+  try {
+    const result = await api.refresh_manifest_state(state.path, currentOptions());
+    const updateDetected = !!(
+      result && result.changed && result.state &&
+      result.state.status === "update_available"
+    );
+    if(updateDetected && !primaryBusy){
+      setPrimaryLoading(true);
+      ownsLoading = true;
+    }
+    if(result && result.manifest) onManifest(result.manifest);
+    if(result && result.changed){
+      renderCarousel(result.carousel || []);
+      Promise.resolve(api.get_carousel())
+        .then(items=>renderCarousel(items || []))
+        .catch(()=>{});
+    }
+    if(ownsLoading) await new Promise(resolve=>setTimeout(resolve, 650));
+    if(result && result.state) onState(result.state);
+  } catch(e) {
+    console.warn("[manifest refresh]", e);
+  } finally {
+    manifestRefreshing = false;
+    if(ownsLoading) setPrimaryLoading(false);
+  }
+}
+
+function refreshManifestWhenDue(){
+  if(Date.now() - lastManifestRefresh >= MANIFEST_FOCUS_REFRESH_MS)
+    refreshManifest();
+}
+
+function startManifestRefresh(){
+  if(manifestRefreshTimer) return;
+  lastManifestRefresh = Date.now();
+  manifestRefreshTimer = setInterval(refreshManifest, MANIFEST_REFRESH_MS);
+  window.addEventListener("focus", refreshManifestWhenDue);
+  document.addEventListener("visibilitychange", ()=>{
+    if(!document.hidden) refreshManifestWhenDue();
+  });
 }
 
 function refreshState(){
   setPrimary("checking");
-  Promise.resolve(api.get_state(state.path, currentOptions()))
+  return Promise.resolve(api.get_state(state.path, currentOptions()))
     .then(st=>onState(st)).catch(()=>setPrimary("install"));
 }
 
@@ -236,12 +333,14 @@ function currentOptions(){
 }
 
 // ===== 프로필 선택 (신규 프로필 끔 → 덮어쓸 대상 고르기) =====
-let profiles = [], selectedProfileId = "";
+let profiles = [], selectedProfileId = "", profileChoiceUserSet = false;
 
 async function loadProfiles(){
   if(!state.path){ profiles = []; selectedProfileId = ""; renderProfiles(); return; }
   try { profiles = (await api.list_profiles(state.path)) || []; }
   catch(e){ profiles = []; }
+  // 사용자가 직접 고르기 전에는 기존 프로필 유무에 맞춰 가장 안전한 기본값을 사용한다.
+  if(!profileChoiceUserSet) $("optNew").checked = profiles.length === 0;
   // 기존 선택이 아직 있으면 유지, 없으면 가장 최근(목록 첫 항목)
   if(!profiles.some(p=>p.id===selectedProfileId))
     selectedProfileId = profiles.length ? profiles[0].id : "";
@@ -275,8 +374,9 @@ function selectProfile(id){
 }
 
 function updateProfilePickVisibility(){
-  const show = !$("optNew").checked;   // 덮어쓰기 모드면 항상 표시(없으면 '프로필 없음')
+  const show = !primaryBusy && !$("optNew").checked;   // 덮어쓰기 모드면 항상 표시(없으면 '프로필 없음')
   $("profilePick").classList.toggle("hidden", !show);
+  $("profilePick").setAttribute("aria-hidden", show ? "false" : "true");
   if(!show) closeProfileMenu();
   syncProfileWidth();
 }
@@ -312,6 +412,7 @@ function renderCarousel(items){
   slides = items || [];
   const track = $("cTrack"); track.innerHTML = "";
   $("cGauge").style.display = "none";
+  showCarouselLoading(false);
   $("cMsg").classList.remove("hidden");
   if(!slides.length){ $("cMsg").textContent = t("no_mods"); return; }
   $("cMsg").classList.add("hidden");
@@ -358,7 +459,21 @@ function showModal(text){
 }
 
 async function onPrimary(){
-  if(state.mode === "current"){ api.play(); return; }
+  if(primaryBusy) return;
+  if(state.mode === "current"){
+    setPrimaryLoading(true);
+    try {
+      await Promise.all([
+        Promise.resolve(api.play()),
+        new Promise(resolve=>setTimeout(resolve, 650)),
+      ]);
+    } catch(e) {
+      console.error("[play]", e);
+    } finally {
+      setPrimaryLoading(false);
+    }
+    return;
+  }
   await confirmAndInstall(false);
 }
 
@@ -393,12 +508,20 @@ function toggleReinstallMenu(e){
 }
 
 function startInstall(){
-  $("primary").disabled = true;
-  $("reinstallToggle").disabled = true;
-  $("reinstallBtn").disabled = true;
+  setPrimaryLoading(true);
   $("progressWrap").classList.remove("hidden");
   $("progressBar").style.width = "0%";
-  api.install(state.path, currentOptions());
+  Promise.resolve(api.install(state.path, currentOptions())).then(started=>{
+    if(started === false){
+      $("progressWrap").classList.add("hidden");
+      setPrimaryLoading(false);
+      setPrimary(state.mode);
+    }
+  }).catch(()=>{
+    $("progressWrap").classList.add("hidden");
+    setPrimaryLoading(false);
+    setPrimary(state.mode);
+  });
 }
 
 async function checkLauncherUpdate(){
@@ -415,7 +538,7 @@ async function checkLauncherUpdate(){
 function updateLauncherButton(){
   const b = $("launcherUpdate");
   if(!b) return;
-  b.disabled = false;
+  b.disabled = primaryBusy;
   if(state.launcherUpdate){
     b.classList.add("isReady");
     b.setAttribute("aria-disabled", "false");
@@ -444,10 +567,10 @@ function flashUpdateTip(){
 }
 
 async function onLauncherUpdate(){
-  if(!state.launcherUpdate) return;
+  if(primaryBusy || !state.launcherUpdate) return;
   if(!await showModal(t("launcher_update_confirm")(state.launcherUpdate.latest))) return;
   $("launcherUpdate").disabled = true;
-  $("primary").disabled = true;
+  setPrimaryLoading(true);
   $("progressWrap").classList.remove("hidden");
   $("progressBar").style.width = "0%";
   $("step").textContent = t("launcher_downloading");
@@ -463,14 +586,16 @@ window.onDone = async ()=>{
   await showModal(t("done"));
   $("progressWrap").classList.add("hidden");
   await loadProfileOptions();   // 설치된 램 기준값 갱신 → 버튼 플레이로 복귀
-  refreshState();
-  loadProfiles();   // 새 프로필이 생겼을 수 있으니 목록 갱신
+  await refreshState();
+  await loadProfiles();   // 새 프로필이 생겼을 수 있으니 목록 갱신
+  setPrimaryLoading(false);
 };
 window.onFail = async (msg)=>{
   $("step").textContent = t("fail_step");
   $("progressWrap").classList.add("hidden");
   await showModal(t("fail")+msg);
-  refreshState();
+  await refreshState();
+  setPrimaryLoading(false);
 };
 window.onLauncherUpdateStep = (m)=>{ $("step").textContent = stepText(m); };
 window.onLauncherUpdateProgress = (f)=>{ $("progressBar").style.width = Math.round(f*100)+"%"; };
@@ -480,6 +605,7 @@ window.onLauncherUpdateFail = async (msg)=>{
   $("launcherUpdate").disabled = false;
   await showModal(t("launcher_fail")+msg);
   setPrimary(state.mode);
+  setPrimaryLoading(false);
 };
 
 // ===== 유휴(마우스 이탈) → 패널 확장 (배너는 줌 없이 팬) =====
@@ -501,6 +627,7 @@ function bind(){
     const p = await api.browse();
     if(p){
       state.path = p;
+      profileChoiceUserSet = false;
       $("path").value = p;
       await loadProfileOptions();
       await loadProfiles();
@@ -509,13 +636,18 @@ function bind(){
   };
   $("path").addEventListener("change", async ()=>{
     state.path = $("path").value.trim();
+    profileChoiceUserSet = false;
     await loadProfileOptions();
     await loadProfiles();
     refreshState();
   });
   $("optShader").addEventListener("change", refreshState);
   $("optRam").addEventListener("change", ()=>{ setRamValue($("optRam").value); applyMode(); });
-  $("optNew").addEventListener("change", ()=>{ updateProfilePickVisibility(); refreshState(); });
+  $("optNew").addEventListener("change", ()=>{
+    profileChoiceUserSet = true;
+    updateProfilePickVisibility();
+    refreshState();
+  });
   $("profileHead").onclick = toggleProfileMenu;
 
   // 언어 메뉴
@@ -555,6 +687,7 @@ const _bridgeTimer = setInterval(()=>{
   if(_started){ clearInterval(_bridgeTimer); return; }
   if(++_bridgeTries > 200){   // ~10초
     clearInterval(_bridgeTimer);
+    showCarouselLoading(false);
     $("cMsg").classList.remove("hidden");
     $("cMsg").textContent = t("bridge_fail");
     setPrimary("install");

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="style.css?v=27">
 </head>
 <body>
   <div id="app">
@@ -51,7 +51,14 @@
           <div class="cArrow left" id="cPrev">‹</div>
           <div class="cArrow right" id="cNext">›</div>
           <div class="cGauge" id="cGauge"><i id="cGaugeFill"></i></div>
-          <div class="cMsg" id="cMsg" data-i18n="loading_mods">모드 정보를 불러오는 중…</div>
+          <div class="cLoading" id="cLoading" role="status" aria-live="polite">
+            <div class="astraLoader" aria-hidden="true">
+              <img class="astraLoaderWhale" src="assets/loader-whale.png" alt="">
+              <img class="astraLoaderStar" src="assets/loader-star.png" alt="">
+            </div>
+            <span data-i18n="loading_mods">모드 정보를 불러오는 중…</span>
+          </div>
+          <div class="cMsg hidden" id="cMsg"></div>
         </div>
 
         <div class="options glass" id="optionsPanel">
@@ -75,25 +82,32 @@
       <div class="step" id="step"></div>
 
       <div class="bottomBar">
-        <div class="profilePick hidden" id="profilePick">
-          <div class="profileDrop" id="profileDrop">
-            <button class="profileHead" id="profileHead" aria-expanded="false" aria-haspopup="listbox">
-              <span class="profileName" id="profileName">—</span>
-              <span class="profileCaret">▾</span>
-            </button>
-            <div class="profileMenu hidden" id="profileMenu" role="listbox"></div>
-          </div>
-        </div>
-
         <div class="footer">
           <div class="footerLeft">
             <button id="githubBtn" class="btn footerIconBtn" title="GitHub" aria-label="GitHub">
             </button>
           </div>
-          <div id="primarySplit" class="primarySplit">
-            <button id="reinstallToggle" class="btn splitArrow" title="재설치" aria-expanded="false"></button>
-            <button id="reinstallBtn" class="btn reinstallBtn" data-i18n="reinstall">재설치</button>
-            <button id="primary" class="btn primary" disabled data-i18n="checking">확인 중</button>
+          <div id="primaryArea" class="primaryArea">
+            <div class="profilePick hidden" id="profilePick">
+              <div class="profileDrop" id="profileDrop">
+                <button class="profileHead" id="profileHead" aria-expanded="false" aria-haspopup="listbox">
+                  <span class="profileName" id="profileName">—</span>
+                  <span class="profileCaret">▾</span>
+                </button>
+                <div class="profileMenu hidden" id="profileMenu" role="listbox"></div>
+              </div>
+            </div>
+            <div id="primarySplit" class="primarySplit">
+              <button id="reinstallToggle" class="btn splitArrow" title="재설치" aria-expanded="false"></button>
+              <button id="reinstallBtn" class="btn reinstallBtn" data-i18n="reinstall">재설치</button>
+              <button id="primary" class="btn primary" disabled data-i18n="checking">확인 중</button>
+            </div>
+            <div id="primaryLoading" class="primaryActionLoading hidden" role="status" aria-label="처리 중" aria-hidden="true">
+              <div class="astraLoader" aria-hidden="true">
+                <img class="astraLoaderWhale" src="assets/loader-whale.png" alt="">
+                <img class="astraLoaderStar" src="assets/loader-star.png" alt="">
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -111,6 +125,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=15"></script>
+  <script src="app.js?v=20"></script>
 </body>
 </html>

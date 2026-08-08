@@ -1,20 +1,9 @@
 ﻿/* ===== 폰트 ===== */
-@font-face{font-family:'Pretendard';font-weight:100;src:url('assets/fonts/Pretendard-Thin.otf')}
 @font-face{font-family:'Pretendard';font-weight:200;src:url('assets/fonts/Pretendard-ExtraLight.otf')}
 @font-face{font-family:'Pretendard';font-weight:300;src:url('assets/fonts/Pretendard-Light.otf')}
-@font-face{font-family:'Pretendard';font-weight:400;src:url('assets/fonts/Pretendard-Regular.otf')}
-@font-face{font-family:'Pretendard';font-weight:500;src:url('assets/fonts/Pretendard-Medium.otf')}
-@font-face{font-family:'Pretendard';font-weight:600;src:url('assets/fonts/Pretendard-SemiBold.otf')}
-@font-face{font-family:'Pretendard';font-weight:700;src:url('assets/fonts/Pretendard-Bold.otf')}
-@font-face{font-family:'PretendardJP';font-weight:100;src:url('assets/fonts/PretendardJP-Thin.otf')}
 @font-face{font-family:'PretendardJP';font-weight:200;src:url('assets/fonts/PretendardJP-ExtraLight.otf')}
 @font-face{font-family:'PretendardJP';font-weight:300;src:url('assets/fonts/PretendardJP-Light.otf')}
-@font-face{font-family:'PretendardJP';font-weight:400;src:url('assets/fonts/PretendardJP-Regular.otf')}
-@font-face{font-family:'PretendardJP';font-weight:500;src:url('assets/fonts/PretendardJP-Medium.otf')}
-@font-face{font-family:'PretendardJP';font-weight:600;src:url('assets/fonts/PretendardJP-SemiBold.otf')}
-@font-face{font-family:'PretendardJP';font-weight:700;src:url('assets/fonts/PretendardJP-Bold.otf')}
 @font-face{font-family:'Byeolbit';font-weight:300;src:url('assets/fonts/Hakgyoansim Byeolbichhaneul OTF L.otf')}
-@font-face{font-family:'Byeolbit';font-weight:700;src:url('assets/fonts/Hakgyoansim Byeolbichhaneul OTF B.otf')}
 
 :root{
   --bg:#0E1014; --card:#171A21; --border:#2A2F3A;
@@ -85,7 +74,7 @@ body.idle{--bx:-90px}
 body.idle #hero{width:calc(100% - var(--peek-w))}
 body.idle #content{transform:translateX(calc(100% - var(--peek-w)))}
 
-#h1,.section,.pathrow,.optrow,.progress,.step,.profilePick,.primarySplit{
+#h1,.section,.pathrow,.optrow,.progress,.step,.primaryArea{
   transition:transform .42s cubic-bezier(.22,.61,.36,1)}
 body.idle #h1,
 body.idle .section,
@@ -93,8 +82,7 @@ body.idle .pathrow,
 body.idle .optrow,
 body.idle .progress,
 body.idle .step,
-body.idle .profilePick,
-body.idle .primarySplit{
+body.idle .primaryArea{
   transform:translateX(var(--idle-content-shift));
   pointer-events:none;
 }
@@ -144,7 +132,12 @@ body.idle .primarySplit{
 .btn.primary:disabled{background:#22262F;color:#5A6170;cursor:default}
 .btn.ghost{background:#1E222B;color:var(--text);padding:0 16px;height:38px}
 .btn.ghost:hover{background:var(--border)}
+.primaryArea{position:relative;display:flex;flex-direction:column;align-items:flex-end;
+  margin-left:auto}
 .primarySplit{display:flex;align-items:stretch;justify-content:flex-end;gap:0}
+.primaryActionLoading{position:absolute;inset:auto 0 0;height:34px;display:flex;align-items:center;
+  justify-content:flex-end}
+.primaryActionLoading .astraLoader{width:60px;height:60px}
 .primarySplit.hasReinstall #primary{border-top-left-radius:0;border-bottom-left-radius:0;min-width:126px}
 .splitArrow{display:none;width:38px;height:46px;padding:0;border-radius:8px 0 0 8px;
   background:var(--accent);border-right:1px solid rgba(6,34,46,.25);
@@ -225,9 +218,73 @@ body.idle .primarySplit{
 .cGauge{position:absolute;left:0;right:0;bottom:0;height:3px;
   background:var(--border);overflow:hidden;z-index:2}
 .cGauge i{display:block;height:100%;width:0;background:var(--accent)}
-.cMsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+.cLoading,.cMsg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   color:var(--sub);font-weight:200;font-size:13px}
+.cLoading{flex-direction:column;gap:7px}
+.astraLoader{position:relative;width:64px;height:64px;flex:0 0 auto}
+.astraLoader img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 
+/* 고래 궤도를 그린 뒤 같은 시작점부터 다시 지우는 무한 로딩 모션 */
+@property --astra-start{
+  syntax:'<angle>';
+  inherits:false;
+  initial-value:0deg;
+}
+@property --astra-end{
+  syntax:'<angle>';
+  inherits:false;
+  initial-value:0deg;
+}
+.astraLoaderWhale{
+  --astra-start:0deg;
+  --astra-end:11deg;
+  -webkit-mask:conic-gradient(from 4deg at 57.2% 52%,transparent 0deg var(--astra-start),#000 var(--astra-start) var(--astra-end),transparent var(--astra-end) 360deg);
+  mask:conic-gradient(from 4deg at 57.2% 52%,transparent 0deg var(--astra-start),#000 var(--astra-start) var(--astra-end),transparent var(--astra-end) 360deg);
+  animation:astraOrbitDraw 2.05s linear infinite;
+}
+.astraLoaderStar{
+  transform-origin:57.2% 52%;
+  animation:astraStarStamp 2.05s cubic-bezier(.2,.8,.2,1) infinite;
+}
+@keyframes astraOrbitDraw{
+  0%{--astra-start:0deg;--astra-end:11deg}
+  2.44%{--astra-start:0deg;--astra-end:12.6deg}
+  4.88%{--astra-start:0deg;--astra-end:16.8deg}
+  7.32%{--astra-start:0deg;--astra-end:23.2deg}
+  9.76%{--astra-start:0deg;--astra-end:31.1deg}
+  12.2%{--astra-start:0deg;--astra-end:40deg}
+  14.63%{--astra-start:0deg;--astra-end:49.6deg}
+  17.07%{--astra-start:0deg;--astra-end:62.7deg}
+  19.51%{--astra-start:0deg;--astra-end:80.9deg}
+  21.95%{--astra-start:0deg;--astra-end:107deg}
+  24.39%{--astra-start:0deg;--astra-end:159.2deg}
+  26.83%{--astra-start:0deg;--astra-end:237.6deg}
+  29.27%{--astra-start:0deg;--astra-end:311.7deg}
+  31.71%{--astra-start:0deg;--astra-end:356.9deg}
+  32.54%,42.88%{--astra-start:0deg;--astra-end:360deg}
+  42.93%{--astra-start:11deg;--astra-end:360deg}
+  45.37%{--astra-start:12.6deg;--astra-end:360deg}
+  47.8%{--astra-start:16.8deg;--astra-end:360deg}
+  50.24%{--astra-start:23.2deg;--astra-end:360deg}
+  52.68%{--astra-start:31.1deg;--astra-end:360deg}
+  55.12%{--astra-start:40deg;--astra-end:360deg}
+  57.56%{--astra-start:49.6deg;--astra-end:360deg}
+  60%{--astra-start:62.7deg;--astra-end:360deg}
+  62.44%{--astra-start:80.9deg;--astra-end:360deg}
+  64.88%{--astra-start:107deg;--astra-end:360deg}
+  67.32%{--astra-start:159.2deg;--astra-end:360deg}
+  69.76%{--astra-start:237.6deg;--astra-end:360deg}
+  72.2%{--astra-start:311.7deg;--astra-end:360deg}
+  74.63%{--astra-start:356.9deg;--astra-end:360deg}
+  75.46%,100%{--astra-start:360deg;--astra-end:360deg}
+}
+@keyframes astraStarStamp{
+  0%,32.54%{opacity:0;transform:scale(.25) rotate(-16deg);filter:none}
+  37.07%{opacity:1;transform:scale(1.22) rotate(3deg);filter:drop-shadow(0 0 5px rgba(255,151,224,.62))}
+  40.24%,82.93%{opacity:1;transform:scale(1) rotate(0);filter:drop-shadow(0 0 2px rgba(255,151,224,.28))}
+  99.8%{opacity:1;transform:scale(.2) rotate(-12deg);filter:none}
+  100%{opacity:0;transform:scale(.2) rotate(-12deg);filter:none}
+}
 /* 진행률 */
 .progress{height:6px;background:#1E222B;border-radius:3px;margin-top:16px;overflow:hidden}
 #progressBar{height:100%;width:0;background:var(--accent);border-radius:3px;
@@ -235,7 +292,7 @@ body.idle .primarySplit{
 .step{color:var(--text);font-weight:200;font-size:12px;margin-top:8px;min-height:16px}
 
 /* ===== 프로필 선택(신규 프로필 끔) ===== */
-.profilePick{display:flex;justify-content:flex-end;margin-bottom:10px}
+.profilePick{width:100%;display:flex;justify-content:flex-end;margin-bottom:10px}
 .profileDrop{position:relative;width:140px}
 .profileHead{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;
   height:30px;padding:0 12px;background:var(--card);border:1px solid var(--border);
@@ -259,7 +316,7 @@ body.idle .primarySplit{
 .profileItem .pram{color:var(--sub);font-size:11px;font-weight:200}
 
 .bottomBar{margin-top:auto;display:flex;flex-direction:column}
-.footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.footer{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
 .footerLeft{display:flex;align-items:center;gap:8px;min-width:0;
   transition:transform .42s cubic-bezier(.22,.61,.36,1)}
 body.idle .footerLeft{transform:translateX(calc((var(--peek-w) - 36px) / 2 - var(--content-pad-x)))}
@@ -280,4 +337,3 @@ body.idle .footerLeft{transform:translateX(calc((var(--peek-w) - 36px) / 2 - var
 #modalText{font-size:13px;line-height:1.6;white-space:pre-wrap;max-height:340px;
   overflow:auto;color:var(--text)}
 .modalBtns{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
-

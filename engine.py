@@ -27,10 +27,10 @@ from pathlib import Path
 REPO_URL = "https://github.com/estraaa47/instantModinstaller"
 MANIFEST_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/manifest.json"
 LAUNCHER_UPDATE_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/launcher_version.json"
-LAUNCHER_VERSION = "1.0.7"
+LAUNCHER_VERSION = "1.0.8"
 
 APP_TITLE = "Astra Ducunt"              # 앱 전체 명칭
-APP_TITLEBAR = "Astra Ducunt Launcher"  # 좌상단 타이틀바 표기
+APP_TITLEBAR = "Astra Ducunt"           # 좌상단 타이틀바 표기
 PROFILE_ID = "astra-ducunt"             # 런처 프로파일 식별자
 PROFILE_NAME = "Astra Ducunt"           # 런처에 보일 프로파일 이름
 MANAGED_FOLDERS = ("mods", "shaderpacks")  # 설치(다운로드 배치) 대상 폴더
