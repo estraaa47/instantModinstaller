@@ -27,7 +27,7 @@ from pathlib import Path
 REPO_URL = "https://github.com/estraaa47/instantModinstaller"
 MANIFEST_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/manifest.json"
 LAUNCHER_UPDATE_URL = "https://raw.githubusercontent.com/estraaa47/instantModinstaller/main/launcher_version.json"
-LAUNCHER_VERSION = "1.0.8"
+LAUNCHER_VERSION = "1.0.9"
 
 APP_TITLE = "Astra Ducunt"              # 앱 전체 명칭
 APP_TITLEBAR = "Astra Ducunt"           # 좌상단 타이틀바 표기
@@ -161,6 +161,47 @@ def is_newer_version(latest, current=LAUNCHER_VERSION):
     return tuple(left) > tuple(right)
 
 
+def refresh_windows_shell_icons():
+    """새 EXE가 같은 경로를 덮어쓴 뒤 Explorer의 이전 아이콘 캐시를 갱신한다."""
+    if not sys.platform.startswith("win") or not getattr(sys, "frozen", False):
+        return False
+
+    try:
+        import ctypes
+
+        notify = ctypes.windll.shell32.SHChangeNotify
+        notify.argtypes = [ctypes.c_long, ctypes.c_uint,
+                           ctypes.c_void_p, ctypes.c_void_p]
+        exe_path = ctypes.c_wchar_p(str(Path(sys.executable).resolve()))
+        notify(0x00002000, 0x0005,
+               ctypes.cast(exe_path, ctypes.c_void_p), None)  # SHCNE_UPDATEITEM
+        notify(0x08000000, 0x0000, None, None)  # SHCNE_ASSOCCHANGED
+
+        # ie4uinit은 Explorer의 아이콘 캐시를 실제로 다시 그리게 한다. 버전당 한 번만 실행한다.
+        state_root = Path(
+            os.environ.get("LOCALAPPDATA") or tempfile.gettempdir()
+        ) / "AstraDucunt"
+        marker = state_root / "shell-icon-version.txt"
+        previous = marker.read_text(encoding="utf-8").strip() if marker.exists() else ""
+        if previous != LAUNCHER_VERSION:
+            tool = Path(os.environ.get("SystemRoot", r"C:\Windows")) / "System32" / "ie4uinit.exe"
+            if tool.exists():
+                subprocess.run(
+                    [str(tool), "-show"],
+                    check=False,
+                    timeout=15,
+                    creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+                )
+            state_root.mkdir(parents=True, exist_ok=True)
+            marker.write_text(LAUNCHER_VERSION, encoding="utf-8")
+
+        notify(0x08000000, 0x0000, None, None)
+        return True
+    except Exception:
+        # 아이콘 갱신 실패가 런처 실행을 막아서는 안 된다.
+        return False
+
+
 def get_launcher_update_info():
     meta = fetch_json(LAUNCHER_UPDATE_URL)
     latest = str(meta.get("version") or "").strip()
@@ -263,6 +304,10 @@ try {
   }
   if (-not $copied) {
     throw "Updated launcher could not be copied."
+  }
+  $iconRefresh = Join-Path $env:SystemRoot "System32\\ie4uinit.exe"
+  if (Test-Path -LiteralPath $iconRefresh) {
+    Start-Process -FilePath $iconRefresh -ArgumentList "-show" -WindowStyle Hidden -Wait
   }
   Start-Sleep -Milliseconds 1800
   Start-Process -FilePath $Dst -WorkingDirectory (Split-Path -Parent $Dst)

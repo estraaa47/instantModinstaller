@@ -1,6 +1,6 @@
 {
-  "version": "1.0.8",
-  "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.8/AstraDucunt.exe",
-  "sha256": "02bbdcfa1a2367d7c2bc60b4645656d4a3b8e9379d3acc25a7fc5c4c02f234b2",
-  "notes": "Introduce the new Astra Ducunt branding and animated whale loader, improve action and manifest-refresh loading states, preserve the selected profile, and reduce the packaged asset size."
+  "version": "1.0.9",
+  "url": "https://github.com/estraaa47/instantModinstaller/releases/download/v1.0.9/AstraDucunt.exe",
+  "sha256": "3a459f8d28c79679598dc5fbb60612de59004d9bfac6e6cdc968c20eecaad8f5",
+  "notes": "Refresh the Windows desktop and shortcut icon automatically after launcher updates."
 }

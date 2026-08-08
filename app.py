@@ -321,6 +321,8 @@ class Api:
 
 
 def main():
+    # 같은 경로의 EXE가 업데이트돼도 바탕화면에 이전 아이콘이 남는 Windows 캐시를 갱신한다.
+    threading.Thread(target=engine.refresh_windows_shell_icons, daemon=True).start()
     api = Api()
     window = webview.create_window(
         engine.APP_TITLEBAR,
